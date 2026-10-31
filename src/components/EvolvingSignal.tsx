@@ -4,13 +4,18 @@ type SignalGeometry = {
   width: number;
   height: number;
   path: string;
+  labBranches: { typed: string; dictated: string };
+  projectBranches: Array<{ id: string; path: string }>;
   chapterNodes: Array<{ id: string; label: string; y: number }>;
   projectNodes: Array<{ id: string; y: number }>;
 };
 
+type SignalBranch = 'typed' | 'dictated' | null;
+
 type EvolvingSignalProps = {
   activeChapter: string;
   activeProject: string | null;
+  activeBranch: SignalBranch;
 };
 
 const CHAPTERS = [
@@ -41,6 +46,11 @@ function measureSignal(): SignalGeometry {
     id: node.dataset.projectNode ?? '',
     y: node.getBoundingClientRect().top + scrollY + node.getBoundingClientRect().height * 0.5,
   }));
+  const projectBranchX = rail + (width < 760 ? 14 : 39);
+  const projectBranches = projectNodes.map((node) => ({
+    id: node.id,
+    path: `M ${rail} ${(node.y - 22).toFixed(1)} C ${rail + 15} ${(node.y - 20).toFixed(1)} ${projectBranchX} ${(node.y - 18).toFixed(1)} ${projectBranchX} ${node.y.toFixed(1)} C ${projectBranchX} ${(node.y + 16).toFixed(1)} ${rail + 14} ${(node.y + 31).toFixed(1)} ${rail} ${(node.y + 34).toFixed(1)}`,
+  }));
 
   const yFor = (id: string, ratio = 0.3) => pageY(section(id), ratio, 0);
   const storyY = yFor('story', 0.26);
@@ -49,6 +59,10 @@ function measureSignal(): SignalGeometry {
   const lessonY = yFor('lessons', 0.3);
   const wisprY = yFor('wispr', 0.2);
   const contactY = yFor('contact', 0.5);
+  const labBranches = {
+    typed: `M ${rail} ${(labY + 18).toFixed(1)} C ${rail + 29} ${(labY + 42).toFixed(1)} ${rail + 30} ${(labY + 82).toFixed(1)} ${rail + 4} ${(labY + 96).toFixed(1)} C ${rail - 5} ${(labY + 75).toFixed(1)} ${rail - 15} ${(labY + 53).toFixed(1)} ${rail - 4} ${(labY + 34).toFixed(1)}`,
+    dictated: `M ${rail} ${(labY + 18).toFixed(1)} C ${rail - 23} ${(labY + 46).toFixed(1)} ${rail - 25} ${(labY + 72).toFixed(1)} ${rail - 4} ${(labY + 92).toFixed(1)}`,
+  };
 
   let path = `M ${rail} -24`;
   const waveEnd = Math.max(70, storyY - 35);
@@ -83,10 +97,10 @@ function measureSignal(): SignalGeometry {
   path += ` C ${rail - 6} ${(contactY + 57).toFixed(1)} ${rail - 18} ${(contactY + 12).toFixed(1)} ${rail} ${contactY.toFixed(1)}`;
   path += ` C ${rail + 14} ${(contactY + 82).toFixed(1)} ${rail + 8} ${(height + 20).toFixed(1)} ${rail} ${(height + 60).toFixed(1)}`;
 
-  return { width, height: height + 90, path, chapterNodes, projectNodes };
+  return { width, height: height + 90, path, labBranches, projectBranches, chapterNodes, projectNodes };
 }
 
-export function EvolvingSignal({ activeChapter, activeProject }: EvolvingSignalProps) {
+export function EvolvingSignal({ activeChapter, activeProject, activeBranch }: EvolvingSignalProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const [geometry, setGeometry] = useState<SignalGeometry | null>(null);
@@ -155,7 +169,11 @@ export function EvolvingSignal({ activeChapter, activeProject }: EvolvingSignalP
       aria-hidden="true"
     >
       <path className="signal-track" d={geometry.path} />
-      <path ref={pathRef} className={`signal-ink ${activeProject ? 'has-active-project' : ''}`} d={geometry.path} />
+      <path ref={pathRef} className="signal-ink" d={geometry.path} />
+      {geometry.projectBranches.map((branch) => (
+        <path key={branch.id} className={`signal-project-branch ${branch.id === activeProject ? 'is-active' : ''}`} d={branch.path} />
+      ))}
+      {activeBranch && <path className="signal-lab-branch is-active" d={geometry.labBranches[activeBranch]} />}
       {geometry.chapterNodes.map((node) => (
         <g key={node.id} className={`signal-node ${node.id === activeChapter ? 'is-current' : ''}`}>
           <circle cx={rail} cy={node.y} r={node.id === activeChapter ? 4 : 2.25} />

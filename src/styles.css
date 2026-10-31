@@ -48,7 +48,8 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px sol
 .signal-track, .signal-ink { fill: none; vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; }
 .signal-track { stroke: rgba(240, 238, 232, 0.075); stroke-width: 1.1; }
 .signal-ink { stroke: var(--accent); stroke-width: 1.45; opacity: 0.76; filter: drop-shadow(0 0 4px rgba(255, 138, 66, 0.22)); transition: stroke-dashoffset 120ms linear; }
-.signal-ink.has-active-project { stroke-width: 1.75; opacity: 0.96; filter: drop-shadow(0 0 6px rgba(255, 138, 66, 0.38)); }
+.signal-project-branch, .signal-lab-branch { fill: none; stroke: var(--accent); stroke-width: 1.7; opacity: 0; pointer-events: none; vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; transition: opacity 220ms ease, stroke-width 220ms ease; }
+.signal-project-branch.is-active, .signal-lab-branch.is-active { stroke-width: 2.1; opacity: 0.96; filter: drop-shadow(0 0 5px rgba(255, 138, 66, 0.36)); }
 .signal-node circle { fill: var(--ink); stroke: rgba(240, 238, 232, 0.32); stroke-width: 1.1; vector-effect: non-scaling-stroke; transition: r 260ms ease, stroke 260ms ease, fill 260ms ease, filter 260ms ease; }
 .signal-node.is-current circle, .project-signal-node.is-active { fill: var(--accent); stroke: var(--accent); filter: drop-shadow(0 0 5px rgba(255, 138, 66, 0.55)); }
 .project-signal-node { fill: var(--ink); stroke: rgba(255, 138, 66, 0.6); stroke-width: 1; vector-effect: non-scaling-stroke; transition: r 260ms ease, fill 260ms ease, filter 260ms ease; }
@@ -296,6 +297,8 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px sol
 .contact__links > a .arrow-mark { width: 13px; height: 13px; color: var(--accent); }
 .contact__links small, .contact-placeholder small { grid-column: 1 / -1; color: var(--muted); font-family: var(--mono); font-size: 8px; letter-spacing: 0.08em; }
 .contact-placeholder { color: #c3c1ba; font-size: 12px; }
+.cv-download { width: fit-content; margin-top: 30px; text-decoration: none; }
+.cv-download .arrow-mark { width: 14px; height: 14px; }
 .site-footer { display: flex; justify-content: space-between; gap: 20px; margin-top: clamp(100px, 13vw, 180px); padding-top: 15px; border-top: 1px solid var(--rule); color: var(--quiet); font-family: var(--mono); font-size: 7px; letter-spacing: 0.12em; }
 .site-footer a { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-family: var(--sans); font-size: 10px; letter-spacing: normal; transition: color 180ms ease; }
 .site-footer a:hover { color: var(--accent); }

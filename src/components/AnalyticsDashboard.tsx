@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import './analytics.css';
 
 type Source = 'live' | 'preview';
-type Metrics = { pageViews: number; impressions: number; clicks: number; ctr: number };
+type Metrics = { pageViews: number; impressions: number; clicks: number; downloads: number; ctr: number };
 type ControlMetric = { targetId: string; impressions: number; clicks: number; ctr: number };
 type Summary = { authenticated: true; periodDays: number; source: Source; totals: Metrics; controls: ControlMetric[] };
 
@@ -130,6 +130,7 @@ export function AnalyticsDashboard() {
                   <article><span>PAGE VIEWS</span><strong>{summary.totals.pageViews.toLocaleString('en-IN')}</strong><small>Not unique visitors</small></article>
                   <article><span>CONTROL IMPRESSIONS</span><strong>{summary.totals.impressions.toLocaleString('en-IN')}</strong><small>Visible for at least 0.7 seconds</small></article>
                   <article><span>CONTROL CLICKS</span><strong>{summary.totals.clicks.toLocaleString('en-IN')}</strong><small>Named links, buttons and options</small></article>
+                  <article><span>CV DOWNLOADS</span><strong>{summary.totals.downloads.toLocaleString('en-IN')}</strong><small>Completed PDF responses</small></article>
                   <article><span>OVERALL CTR</span><strong>{percent(summary.totals.ctr)}</strong><small>Clicks ÷ impressions</small></article>
                 </div>
 

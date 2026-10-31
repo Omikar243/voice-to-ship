@@ -168,7 +168,7 @@ export function AnalyticsClient() {
     <aside className="analytics-notice" aria-label="Anonymous traffic analytics" data-analytics-ignore="true">
       <div className="analytics-notice__copy">
         <span className="analytics-notice__label">A SMALL PRIVACY NOTE</span>
-        <p>This site counts page views, visible controls and clicks to understand which chapters are useful. The app does not store what you type, visitor identity, IP address or user-agent in its analytics records. Raw events expire after 30 days; daily totals remain.</p>
+        <p>This site counts page views, visible controls, clicks and—when enabled—completed CV downloads to understand which parts are useful. The app does not store what you type, visitor identity, IP address or user-agent in its analytics records. Raw events expire after 30 days; daily totals remain. Each completed full-CV download also sends the owner a notice without identifying you; opting out stops analytics counts, not that operational notice.</p>
       </div>
       <div className="analytics-notice__actions">
         <span className="analytics-notice__state">Anonymous counts are {trackingEnabled ? 'on' : 'off'} on this device.</span>
@@ -181,4 +181,8 @@ export function AnalyticsClient() {
 
 export function openAnalyticsSettings() {
   window.dispatchEvent(new Event('vts:open-analytics-settings'));
+}
+
+export function analyticsEnabledForCurrentDevice() {
+  return readTrackingPreference();
 }

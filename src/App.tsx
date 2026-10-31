@@ -3,7 +3,7 @@ import { Atmosphere } from './components/Atmosphere';
 import { BlurText } from './components/BlurText';
 import { EvolvingSignal } from './components/EvolvingSignal';
 import { LenisRoot } from './components/LenisRoot';
-import { AnalyticsClient, openAnalyticsSettings } from './components/AnalyticsClient';
+import { AnalyticsClient, analyticsEnabledForCurrentDevice, openAnalyticsSettings } from './components/AnalyticsClient';
 import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 
 type Chapter = { id: string; label: string; short: string };
@@ -215,7 +215,11 @@ function App() {
     <LenisRoot>
       <div className="site-shell">
         <a className="skip-link" href="#main-content">Skip to the portfolio</a>
-        <EvolvingSignal activeChapter={activeChapter} activeProject={openProject ?? activeProject} />
+        <EvolvingSignal
+          activeChapter={activeChapter}
+          activeProject={openProject ?? activeProject}
+          activeBranch={activeChapter === 'lab' ? labMode : null}
+        />
 
         <header className="site-header">
           <a className="wordmark" href="#hero" aria-label="VOICE TO SHIP, return to the beginning">
@@ -359,7 +363,7 @@ function App() {
               <div className="lab__intro">
                 <p className="eyebrow">A THOUGHT BEFORE IT IS POLISHED</p>
                 <h2 id="lab-title" className="section-title">Not every path leads to <em>the answer.</em></h2>
-                <p className="section-copy">Voice-versus-typing should be tested, not assumed. This small prototype lets you compare a typed thought with a pasted dictation transcript. No microphone is requested. Nothing is recorded or sent.</p>
+                <p className="section-copy">Voice-versus-typing should be tested, not assumed. This small prototype lets you compare a typed thought with a pasted dictation transcript. The starter text is illustrative, not a Wispr Flow test or measured result; replace it with your own evidence before presenting it as one. No microphone is requested. Nothing is recorded or sent.</p>
                 <span className="status-tag"><i /> PROTOTYPE / NOT A MEASURED EXPERIMENT</span>
               </div>
 
@@ -463,6 +467,20 @@ function App() {
                 <div className="contact-placeholder"><span>LinkedIn</span><small>Profile URL to add</small></div>
                 <div className="contact-placeholder"><span>Email</span><small>Address to add</small></div>
               </div>
+              <a
+                className="button cv-download"
+                href="/api/download/profile"
+                download="Omkar_Shettigar_Profile.pdf"
+                data-analytics-id="download-full-cv"
+                onClick={(event) => {
+                  if (!analyticsEnabledForCurrentDevice()) {
+                    event.preventDefault();
+                    window.location.assign('/api/download/profile?analytics=off');
+                  }
+                }}
+              >
+                Download full CV <Arrow diagonal />
+              </a>
             </div>
             <footer className="site-footer">
               <span>VOICE TO SHIP / OMKAR SHETTIGAR</span>
