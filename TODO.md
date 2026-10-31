@@ -53,9 +53,14 @@
   - The visible privacy notice must disclose the owner notification and clarify that opting out stops analytics counts but not the separately requested operational download notice.
   - The built-in owner-notification service confirms acceptance, not email delivery; keep that delivery limitation explicit.
 
-- [x] **Wispr relevance and speculative growth experiment**
-  - Include “What I'd bring to Wispr” as a clearly labelled speculative India growth experiment.
-  - Keep hypotheses and prospective results explicitly speculative; do not present them as an existing campaign or established results.
+- [x] **Wispr hiring case, product/user analysis and speculative growth experiment**
+  - Make the section answer “Why should Wispr Flow hire me?” with an honest, specific account of what Omkar could bring from his stated data-science, AI/ML and product-thinking background. Do not invent previous growth results or credentials.
+  - Describe the product using current official capability information, but do not repeat unverified performance claims or imply that product features alone prove user value.
+  - Use credible India language/voice-use evidence with its limits: general Indic-language internet access and voice commands are not proof that users want AI dictation or that Wispr Flow has product-market fit in India.
+  - State a narrow first-user-segment hypothesis and the actual writing job/context to test; do not treat all Indian users as one audience.
+  - Show a measurable adoption path from discovery to first accepted output, repeat use, and voluntary sharing. Propose a fair same-task typed-versus-Flow trial that considers time-to-useful-draft, corrections/rework, output quality, context and repeat use. Clearly label it as proposed and show no results until Omkar supplies evidence.
+  - Discuss qualitative adoption frictions only as anecdotal user reports, not representative findings; include privacy, consent and no-transcript/audio collection as experiment guardrails.
+  - Cite official product/research sources and identify third-party reviews as individual accounts. Keep the entire India growth idea speculative, not an existing Wispr campaign or established result.
 
 - [ ] **Contact and responsive quality**
   - Provide contact access for LinkedIn, GitHub and email, with placeholders for any missing URLs or addresses.

@@ -78,28 +78,40 @@ const ideaRounds = [
 
 const decisionOptions = [
   {
-    id: 'journey',
-    title: 'Trace the first-use journey',
-    lens: 'Start with behavior, not a channel.',
-    experiment: 'Map how a few consenting users move from first discovery to a first successful dictation. Identify the earliest uncertain step before proposing a campaign.',
-    signal: 'A proposed signal: first successful use, plus where people pause or leave. This is a hypothesis to measure, not a Wispr metric.',
-    next: 'If the friction clusters before first use, test clearer examples. If people reach the product but stall, investigate onboarding instead.',
+    id: 'discovery',
+    title: 'Find a task worth trying',
+    lens: 'Show one job, not “voice is faster.”',
+    experiment: 'First-cohort hypothesis: Bengaluru campus creators who regularly draft short scripts or captions. Show a consented, task-led example, then invite a real first try instead of optimizing for views.',
+    signal: 'Proposed: qualified people who choose to start the task and reach the first useful output. No baseline exists.',
+    next: 'If the story earns attention but not a first try, revisit audience, task and context before adding reach.',
+    guardrail: 'A small exploratory cohort can surface friction; it cannot estimate India-wide demand or market size.',
   },
   {
-    id: 'creator',
-    title: 'Make one use case travel',
-    lens: 'Give a real task a repeatable story.',
-    experiment: 'Invite a student, creator or builder to turn one rough spoken idea into a useful artifact. Show the whole before-and-after workflow, including what did not help.',
-    signal: 'A proposed signal: completed creation and voluntary sharing. Do not treat views as proof of product value.',
-    next: 'Repeat only if people finish the task, understand the value and choose to share it without being pushed.',
+    id: 'first-output',
+    title: 'Earn the first kept draft',
+    lens: 'Define activation by an output the user accepts.',
+    experiment: 'Ask each participant to complete the same short script or caption in their normal text field: once by typing and once with Flow. Counterbalance the order and let them review both before deciding what they would keep.',
+    signal: 'Proposed: first draft kept after review. Also track time-to-useful-draft, corrections/rework, and a simple output-quality rubric.',
+    next: 'If voice is faster but causes more rework or lower quality, diagnose task fit, recognition or cleanup before scaling the message.',
+    guardrail: 'Use the same supported device and app for both attempts. Do not collect audio or paste either draft into portfolio analytics.',
   },
   {
-    id: 'onboarding',
-    title: 'Make the first win obvious',
-    lens: 'Reduce time to a meaningful first result.',
-    experiment: 'Test one concrete first-run task with clear examples for a specific audience. Compare the path with the current experience before changing more than one thing.',
-    signal: 'A proposed signal: time to first useful result and completion of the chosen task. No baseline or result has been supplied.',
-    next: 'Keep the version that helps more people finish the task without adding extra steps or unsupported claims.',
+    id: 'repeat',
+    title: 'Find where it fits a day',
+    lens: 'Context and comfort decide whether a habit forms.',
+    experiment: 'With consent, follow up after seven days: when did people choose voice, where did they switch back to the keyboard, and why? Separate task, device, language and setting rather than averaging them together.',
+    signal: 'Proposed: voluntary repeat use within seven days, paired with the context and friction behind it. This is not Wispr retention data.',
+    next: 'Improve the highest-friction context and keep typing complementary; do not assume voice should replace every input.',
+    guardrail: 'Ask only for consented, coded observations. Keep private notes separate from anonymous site events and define deletion before collecting them.',
+  },
+  {
+    id: 'sharing',
+    title: 'Earn a recommendation',
+    lens: 'Share the finished value, not private speech.',
+    experiment: 'Offer participants an optional way to share a sanitized artifact made with Flow. Do not preselect sharing, expose the spoken transcript or pressure people to post.',
+    signal: 'Proposed: voluntary shares that lead another suitable user to a first useful output—not raw views or impressions.',
+    next: 'Scale only if the shared proof brings qualified first use and repeat value, not just reach.',
+    guardrail: 'Get explicit consent for every artifact. A participant can decline without losing access or being counted as a failure.',
   },
 ];
 
@@ -126,7 +138,7 @@ function App() {
   const [ideaStep, setIdeaStep] = useState(0);
   const [ideaSeconds, setIdeaSeconds] = useState(60);
   const [ideaAnswers, setIdeaAnswers] = useState<string[]>([]);
-  const [decisionChoice, setDecisionChoice] = useState('journey');
+  const [decisionChoice, setDecisionChoice] = useState('discovery');
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -199,7 +211,7 @@ function App() {
   };
 
   const copyDecision = async () => {
-    const content = `${selectedDecision.title}\n\n${selectedDecision.experiment}\n\n${selectedDecision.signal}`;
+    const content = `${selectedDecision.title}\n\n${selectedDecision.experiment}\n\n${selectedDecision.signal}\n\nGuardrail: ${selectedDecision.guardrail}`;
     try {
       await navigator.clipboard.writeText(content);
       setCopied(true);
@@ -433,23 +445,48 @@ function App() {
 
           <section className="wispr section-shell chapter-section" id="wispr" data-chapter="wispr" aria-labelledby="wispr-title">
             <div className="section-label"><span>06</span><span>THE CONVERGENCE</span><span className="section-label__line" /><span>SPECULATIVE GROWTH CONCEPT</span></div>
-            <div className="wispr__heading"><div><p className="eyebrow">WHAT I'D BRING TO WISPR</p><h2 id="wispr-title" className="section-title">India speaks. <em>Ideas move.</em></h2></div><p>A hypothesis to explore—not an existing Wispr Flow campaign and not a result.</p></div>
+            <div className="wispr__heading"><div><p className="eyebrow">WHY I'D BE USEFUL AT WISPR FLOW</p><h2 id="wispr-title" className="section-title">India speaks. <em>Ideas move.</em></h2></div><p>A product-growth hypothesis to test—not an existing Wispr campaign, internal funnel fact or result.</p></div>
+            <div className="wispr-evidence" aria-label="Evidence and questions behind the India growth hypothesis">
+              <article className="wispr-evidence__item">
+                <span>01 / THE PRODUCT JOB</span>
+                <p>Wispr describes Flow as speech-to-text across apps and devices, with cleanup and personal vocabulary tools. The useful question is whether a person keeps the result in the work they were already doing—not whether a demo looks fast.</p>
+                <a className="wispr-source" href="https://wisprflow.ai/features" target="_blank" rel="noreferrer">[1] Official product features <Arrow diagonal /></a>
+                <a className="wispr-source" href="https://wisprflow.ai/pricing" target="_blank" rel="noreferrer">[2] Current plans <Arrow diagonal /></a>
+              </article>
+              <article className="wispr-evidence__item">
+                <span>02 / THE INDIA SIGNAL</span>
+                <p>IAMAI–Kantar reports 870 million internet users had accessed Indic-language content in 2024. Its voice-command measure includes activities such as navigation and search; neither statistic proves demand for AI dictation or Flow. This is a reason to test language and task fit, not a market-size claim.</p>
+                <a className="wispr-source" href="https://www.iamai.in/sites/default/files/research/Kantar_%20IAMAI%20report_2024_.pdf" target="_blank" rel="noreferrer">[3] IAMAI–Kantar, ICUBE 2024 <Arrow diagonal /></a>
+              </article>
+              <article className="wispr-evidence__item">
+                <span>03 / THE HUMAN FRICTION</span>
+                <p>Individual reviews describe open-office awkwardness, proofreading and a learning curve. These are anecdotes, not representative findings. They suggest what to observe: comfort, correction effort and the moments when typing still wins.</p>
+                <a className="wispr-source" href="https://nicklafferty.com/reviews/wispr-flow/" target="_blank" rel="noreferrer">[4] One user's 2026 review <Arrow diagonal /></a>
+                <a className="wispr-source" href="https://zackproser.com/blog/wisprflow-review" target="_blank" rel="noreferrer">[5] One high-use review <Arrow diagonal /></a>
+              </article>
+            </div>
             <div className="wispr-concept">
-              <div className="wispr-concept__statement"><span className="concept-index">CONCEPT / 01</span><h3>A voice-first creator challenge.</h3><p>Invite students, creators and builders to turn one spoken idea into something useful with Wispr Flow: a study guide, a build brief, a video script or a pitch outline.</p></div>
-              <div className="wispr-concept__measurement"><span className="eyebrow">WHAT I WOULD MEASURE</span><ul><li>First successful dictation</li><li>Completed creation</li><li>Repeat usage</li><li>Voluntary sharing</li></ul><p>Proposed signals only. No baseline or campaign data is claimed.</p></div>
+              <div className="wispr-concept__statement">
+                <span className="concept-index">MY HIRING CASE / DATA + PRODUCT</span>
+                <h3>Growth is the moment a first draft becomes a habit.</h3>
+                <p>As a data scientist with AI/ML experience and a product-thinking mindset, I would connect model behavior to the work a person actually finishes: find the failure slice, measure the correction cost, prototype one change, then see if users keep the output and return. That is the contribution I would bring—not a claim that I have already run a Wispr campaign.</p>
+                <div className="wispr-cohort"><span>FIRST COHORT / HYPOTHESIS</span><p>Bengaluru campus creators who regularly draft short scripts or captions on a phone or laptop. A bounded group with a concrete artifact to test—not a claim that this is India's best or largest audience. Validate their language, device, setting and comfort before deciding.</p></div>
+              </div>
+              <div className="wispr-concept__measurement"><span className="eyebrow">WHAT WOULD COUNT AS VALUE?</span><ul><li>A draft the user keeps</li><li>Less correction work</li><li>Useful output quality</li><li>Voluntary repeat use</li></ul><p>Proposed measures only. No baseline, conversion rate or campaign outcome is claimed.</p></div>
             </div>
 
             <div className="decision-room" id="decision-room" aria-labelledby="decision-title">
-              <div className="decision-room__heading"><div><p className="eyebrow">TEST MY THINKING / DECISION ROOM</p><h3 id="decision-title">Where would you start?</h3></div><p>Scenario: a product feels useful after first use, but fewer people discover it. This is a framing exercise, not a claim about Wispr Flow’s current funnel.</p></div>
+              <div className="decision-room__heading"><div><p className="eyebrow">TEST MY THINKING / DECISION ROOM</p><h3 id="decision-title">Where does intent become habit?</h3></div><p>Scenario: a voice demo attracts interest, but the team still needs to learn who reaches a useful first draft, who returns and why. This is a proposed diagnostic—not a claim about Wispr Flow's actual funnel.</p></div>
               <div className="decision-room__body">
-                <div className="decision-options" role="group" aria-label="Choose a first move">
-                  {decisionOptions.map((option, index) => <button className={decisionChoice === option.id ? 'is-selected' : ''} type="button" aria-pressed={decisionChoice === option.id} key={option.id} onClick={() => setDecisionChoice(option.id)}><span>0{index + 1}</span><strong>{option.title}</strong><small>{option.lens}</small><Arrow diagonal /></button>)}
+                <div className="decision-options" role="group" aria-label="Choose an adoption stage to inspect">
+                  {decisionOptions.map((option, index) => <button data-analytics-id={`wispr-growth-stage-${option.id}`} className={decisionChoice === option.id ? 'is-selected' : ''} type="button" aria-pressed={decisionChoice === option.id} key={option.id} onClick={() => setDecisionChoice(option.id)}><span>0{index + 1}</span><strong>{option.title}</strong><small>{option.lens}</small><Arrow diagonal /></button>)}
                 </div>
                 <div className="decision-detail" aria-live="polite">
-                  <div className="decision-detail__top"><span>FIRST EXPERIMENT / PROPOSED</span><span>NO RESULTS CLAIMED</span></div>
+                  <div className="decision-detail__top"><span>USER JOURNEY / PROPOSED</span><span>NO RESULTS CLAIMED</span></div>
                   <p className="decision-detail__experiment">{selectedDecision.experiment}</p>
                   <div className="decision-detail__row"><span>Signal to watch</span><p>{selectedDecision.signal}</p></div>
                   <div className="decision-detail__row"><span>What I'd do next</span><p>{selectedDecision.next}</p></div>
+                  <div className="decision-detail__row"><span>Guardrail</span><p>{selectedDecision.guardrail}</p></div>
                   <button className="text-link" type="button" onClick={copyDecision}>{copied ? 'Copied to clipboard' : 'Copy this decision note'} <Arrow /></button>
                 </div>
               </div>
