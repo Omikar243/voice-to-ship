@@ -3,7 +3,7 @@ import { Atmosphere } from './components/Atmosphere';
 import { BlurText } from './components/BlurText';
 import { EvolvingSignal } from './components/EvolvingSignal';
 import { LenisRoot } from './components/LenisRoot';
-import { AnalyticsClient, analyticsEnabledForCurrentDevice } from './components/AnalyticsClient';
+import { AnalyticsClient } from './components/AnalyticsClient';
 import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import { PerformanceMonitor } from './components/PerformanceMonitor';
 import { SignalLostGame } from './components/SignalLostGame';
@@ -443,7 +443,7 @@ function App() {
                   <button className="text-link" type="button" onClick={beginIdeaEngine}>Play again <Arrow /></button>
                 </div>
               )}
-              {ideaExpired && <p className="idea-engine__privacy">Optional by design. Skip straight to the projects or Decision Room whenever you like.</p>}
+              {ideaExpired && <p className="idea-engine__optional">Optional by design. Skip straight to the projects or Decision Room whenever you like.</p>}
             </div>
           </section>
 
@@ -522,12 +522,6 @@ function App() {
                 href="/api/download/profile"
                 download="Omkar_Shettigar_Profile.pdf"
                 data-analytics-id="download-full-cv"
-                onClick={(event) => {
-                  if (!analyticsEnabledForCurrentDevice()) {
-                    event.preventDefault();
-                    window.location.assign('/api/download/profile?analytics=off');
-                  }
-                }}
               >
                 Download full CV <Arrow diagonal />
               </a>

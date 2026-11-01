@@ -1,18 +1,9 @@
 import { useEffect, useRef } from 'react';
 
-const TRACKING_KEY = 'voice-to-ship-analytics-off';
 const CONTROL_SELECTOR = 'a[href], button:not([disabled]), [role="button"], [role="option"], [role="tab"], [role="radio"], [role="switch"]';
 
 type EventType = 'page_view' | 'visit_start' | 'impression' | 'click';
 type Source = 'direct' | 'search' | 'social' | 'github' | 'referral' | 'other';
-
-function readTrackingPreference() {
-  try {
-    return window.localStorage.getItem(TRACKING_KEY) !== 'true';
-  } catch {
-    return true;
-  }
-}
 
 function makeControlId(control: HTMLElement) {
   const existing = control.dataset.analyticsId;
@@ -66,11 +57,10 @@ function sendEvent(eventType: EventType, targetId: string, source = sourceBucket
 }
 
 export function AnalyticsClient() {
-  const trackingEnabled = readTrackingPreference();
   const pageViewSent = useRef(false);
 
   useEffect(() => {
-    if (!trackingEnabled || window.location.pathname === '/insights') return undefined;
+    if (window.location.pathname === '/insights') return undefined;
 
     if (!pageViewSent.current) {
       sendEvent('page_view', 'portfolio-home');
@@ -143,11 +133,7 @@ export function AnalyticsClient() {
       pending.clear();
       document.removeEventListener('click', onClick, true);
     };
-  }, [trackingEnabled]);
+  }, []);
 
   return null;
-}
-
-export function analyticsEnabledForCurrentDevice() {
-  return readTrackingPreference();
 }

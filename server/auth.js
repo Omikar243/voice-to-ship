@@ -131,7 +131,7 @@ export async function createAuthorization(originValue, returnTo) {
   await db.execute(
     `INSERT INTO analytics_oauth_states
       (nonce_hash, origin, redirect_uri, return_to, cookie_secure, expires_at)
-     VALUES (?, ?, ?, ?, ?, DATE_ADD(UTC_TIMESTAMP(6), INTERVAL ? SECOND))`,
+     VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP + (?::int * INTERVAL '1 second'))`,
     [nonceHash, origin.origin, redirectUri, returnTo, origin.protocol === 'https:', OAUTH_STATE_TTL_SECONDS],
   );
 
@@ -173,7 +173,7 @@ async function consumeOAuthState(encodedState, nonceCookie) {
     const [rows] = await connection.execute(
       `SELECT origin, redirect_uri, return_to, cookie_secure
        FROM analytics_oauth_states
-       WHERE nonce_hash = ? AND consumed_at IS NULL AND expires_at > UTC_TIMESTAMP(6)
+       WHERE nonce_hash = ? AND consumed_at IS NULL AND expires_at > CURRENT_TIMESTAMP
        LIMIT 1 FOR UPDATE`,
       [nonceHash],
     );
@@ -184,7 +184,7 @@ async function consumeOAuthState(encodedState, nonceCookie) {
       throw new HttpError(400, 'Invalid OAuth state');
     }
     const [updateResult] = await connection.execute(
-      'UPDATE analytics_oauth_states SET consumed_at = UTC_TIMESTAMP(6) WHERE nonce_hash = ? AND consumed_at IS NULL',
+      'UPDATE analytics_oauth_states SET consumed_at = CURRENT_TIMESTAMP WHERE nonce_hash = ? AND consumed_at IS NULL',
       [nonceHash],
     );
     if (updateResult.affectedRows !== 1) {
@@ -273,12 +273,12 @@ export async function completeAuthorization(req) {
     await connection.beginTransaction();
     await connection.execute(
       `INSERT INTO analytics_owner (id, owner_openid_hash) VALUES (1, ?)
-       ON DUPLICATE KEY UPDATE owner_openid_hash = VALUES(owner_openid_hash)`,
+       ON CONFLICT (id) DO UPDATE SET owner_openid_hash = EXCLUDED.owner_openid_hash`,
       [ownerOpenIdHash],
     );
     await connection.execute(
       `INSERT INTO analytics_sessions (session_token_hash, owner_openid_hash, expires_at)
-       VALUES (?, ?, DATE_ADD(UTC_TIMESTAMP(6), INTERVAL ? DAY))`,
+       VALUES (?, ?, CURRENT_TIMESTAMP + (?::int * INTERVAL '1 day'))`,
       [sessionTokenHash, ownerOpenIdHash, APP_SESSION_TTL_DAYS],
     );
     await connection.commit();
@@ -340,7 +340,7 @@ export async function resolveOwnerAuthentication(req) {
     `SELECT s.owner_openid_hash
      FROM analytics_sessions s
      INNER JOIN analytics_owner o ON o.id = 1 AND o.owner_openid_hash = s.owner_openid_hash
-     WHERE s.session_token_hash = ? AND s.revoked_at IS NULL AND s.expires_at > UTC_TIMESTAMP(6)
+     WHERE s.session_token_hash = ? AND s.revoked_at IS NULL AND s.expires_at > CURRENT_TIMESTAMP
      LIMIT 1`,
     [sessionTokenHash],
   );
@@ -351,7 +351,7 @@ export async function revokeCurrentSession(req) {
   const token = parseCookieHeader(req.headers.cookie, APP_SESSION_COOKIE);
   if (token && token.length <= 8192 && !verifyPlatformJwt(token)) {
     await getPool().execute(
-      'UPDATE analytics_sessions SET revoked_at = UTC_TIMESTAMP(6) WHERE session_token_hash = ? AND revoked_at IS NULL',
+      'UPDATE analytics_sessions SET revoked_at = CURRENT_TIMESTAMP WHERE session_token_hash = ? AND revoked_at IS NULL',
       [sha256(token)],
     );
   }

@@ -118,7 +118,7 @@ export function AnalyticsDashboard() {
       <section className="insights-content" aria-labelledby="insights-title">
         <p className="insights-kicker">VOICE TO SHIP / FIELD NOTES</p>
         <h1 id="insights-title">A signal, <em>counted.</em></h1>
-        <p className="insights-intro">Anonymous traffic and per-control click-through. No unique visitors, personal content or visitor identity is stored in these event records.</p>
+        <p className="insights-intro">Traffic, control engagement, source categories and historical performance for the portfolio.</p>
 
         {signedOut ? (
           <div className="insights-auth-panel">
@@ -147,7 +147,7 @@ export function AnalyticsDashboard() {
               <>
                 <div className="insights-metrics" aria-label="Traffic summary">
                   <article><span>VISIT STARTS</span><strong>{summary.totals.visits.toLocaleString('en-IN')}</strong><small>Anonymous session starts, not unique people</small></article>
-                  <article><span>PAGE VIEWS</span><strong>{summary.totals.pageViews.toLocaleString('en-IN')}</strong><small>Not unique visitors</small></article>
+                  <article><span>PAGE VIEWS</span><strong>{summary.totals.pageViews.toLocaleString('en-IN')}</strong><small>Portfolio page loads</small></article>
                   <article><span>CONTROL IMPRESSIONS</span><strong>{summary.totals.impressions.toLocaleString('en-IN')}</strong><small>Visible for at least 0.7 seconds</small></article>
                   <article><span>CONTROL CLICKS</span><strong>{summary.totals.clicks.toLocaleString('en-IN')}</strong><small>Named links, buttons and options</small></article>
                   <article><span>CV DOWNLOADS</span><strong>{summary.totals.downloads.toLocaleString('en-IN')}</strong><small>Completed PDF responses</small></article>
@@ -170,12 +170,11 @@ export function AnalyticsDashboard() {
                   <TrendChart points={(performance?.series ?? []).filter((point) => point.sampleSource === 'browser' && point.metric === performanceMetric)} />
                 </section>
                 <section className="insights-controls" aria-labelledby="sources-title">
-                  <div className="insights-controls__heading"><div><span className="insights-kicker">WHERE VISITS STARTED</span><h2 id="sources-title">Coarse traffic sources</h2></div><span className="insights-source-tag">NO REFERRER URLS STORED</span></div>
+                  <div className="insights-controls__heading"><div><span className="insights-kicker">WHERE VISITS STARTED</span><h2 id="sources-title">Traffic sources</h2></div><span className="insights-source-tag">SOURCE CATEGORIES</span></div>
                   <div className="insights-table-wrap"><table><thead><tr><th scope="col">SOURCE</th><th scope="col">VISITS</th><th scope="col">VIEWS</th><th scope="col">CLICKS</th><th scope="col">CTR</th></tr></thead><tbody>{(sourceSummary?.sources ?? []).map((item) => <tr key={item.source}><th scope="row">{labelFor(item.source)}</th><td>{item.visits.toLocaleString('en-IN')}</td><td>{item.pageViews.toLocaleString('en-IN')}</td><td>{item.clicks.toLocaleString('en-IN')}</td><td>{percent(item.ctr)}</td></tr>)}</tbody></table></div>
                 </section>
               </>
             )}
-            <p className="insights-retention">Raw anonymous events are removed after 30 days; daily aggregate counts remain. Preview and live traffic are reported separately. Activity from visitors who opt out is not counted.</p>
           </>
         )}
       </section>

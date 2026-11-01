@@ -47,19 +47,21 @@ export async function recordAnalyticsEvent(eventType, targetId, source = 'direct
     }
     await connection.execute(
       `INSERT INTO analytics_events (event_type, target_id, app_env, created_at)
-       VALUES (?, ?, ?, UTC_TIMESTAMP(6))`,
+       VALUES (?, ?, ?, CURRENT_TIMESTAMP)`,
       [eventType, targetId, environment],
     );
     await connection.execute(
       `INSERT INTO analytics_daily_rollups (app_env, event_date, target_id, event_type, event_count)
-       VALUES (?, UTC_DATE(), ?, ?, 1)
-       ON DUPLICATE KEY UPDATE event_count = event_count + 1`,
+       VALUES (?, CURRENT_DATE, ?, ?, 1)
+       ON CONFLICT (app_env, event_date, target_id, event_type)
+       DO UPDATE SET event_count = analytics_daily_rollups.event_count + 1`,
       [environment, targetId, eventType],
     );
     await connection.execute(
       `INSERT INTO analytics_source_daily_rollups (app_env, event_date, source, target_id, event_type, event_count)
-       VALUES (?, UTC_DATE(), ?, ?, ?, 1)
-       ON DUPLICATE KEY UPDATE event_count = event_count + 1`,
+       VALUES (?, CURRENT_DATE, ?, ?, ?, 1)
+       ON CONFLICT (app_env, event_date, source, target_id, event_type)
+       DO UPDATE SET event_count = analytics_source_daily_rollups.event_count + 1`,
       [environment, source, targetId, eventType],
     );
     await connection.commit();
@@ -77,7 +79,7 @@ export async function cleanupExpiredRawEvents() {
   const connection = await db.getConnection();
   try {
     await connection.query(
-      'DELETE FROM analytics_events WHERE created_at < DATE_SUB(UTC_TIMESTAMP(6), INTERVAL 30 DAY)',
+      "DELETE FROM analytics_events WHERE created_at < CURRENT_TIMESTAMP - INTERVAL '30 days'",
     );
   } catch (error) {
     throw error;
@@ -117,7 +119,7 @@ export async function readAnalyticsSummary(req) {
     `SELECT target_id, event_type, SUM(event_count) AS event_count
      FROM analytics_daily_rollups
      WHERE app_env = ?
-       AND event_date >= DATE_SUB(UTC_DATE(), INTERVAL ? DAY)
+       AND event_date >= CURRENT_DATE - (?::int * INTERVAL '1 day')
      GROUP BY target_id, event_type`,
     [appEnvironment, periodDays - 1],
   );
@@ -180,7 +182,7 @@ export async function readTrafficSources(req) {
   const [rows] = await getPool().execute(
     `SELECT source, event_type, SUM(event_count) AS event_count
      FROM analytics_source_daily_rollups
-     WHERE app_env = ? AND event_date >= DATE_SUB(UTC_DATE(), INTERVAL ? DAY)
+     WHERE app_env = ? AND event_date >= CURRENT_DATE - (?::int * INTERVAL '1 day')
      GROUP BY source, event_type`,
     [appEnvironment, periodDays - 1],
   );

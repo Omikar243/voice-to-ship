@@ -117,7 +117,7 @@ export function VoiceAgent({ onPlayGame }: VoiceAgentProps) {
       <div className="voice-agent__actions"><button className={`button ${state === 'listening' ? 'is-listening' : ''}`} type="button" data-analytics-id="voice-agent-talk" onClick={state === 'listening' ? stopListening : startListening} disabled={state === 'thinking'}>{state === 'listening' ? 'Stop and answer' : state === 'thinking' ? 'Thinking…' : state === 'speaking' ? 'Talk to interrupt' : 'Push to talk'} <span aria-hidden="true">{state === 'listening' ? '■' : '●'}</span></button><button className="voice-agent__mute" type="button" data-analytics-id="voice-agent-stop-speaking" onClick={() => { window.speechSynthesis?.cancel(); setState('idle'); }}>Stop voice</button></div>
       {!supportsSpeech && <p className="voice-agent__fallback">Speech recognition is not available in this browser. Type a question instead.</p>}
       <form className="voice-agent__text" onSubmit={(event) => { event.preventDefault(); submitText(); }}><label htmlFor="voice-agent-text">Text fallback</label><input id="voice-agent-text" value={textMode} onChange={(event) => setTextMode(event.target.value)} placeholder="Ask about the work, game or lab…" /><button type="submit" data-analytics-id="voice-agent-text-submit">Ask</button></form>
-      <small className="voice-agent__note">Free browser speech tools · microphone starts only after your action · the site does not save audio or transcripts · it waits for you to finish before answering.</small>
+      <small className="voice-agent__note">Free browser speech tools · microphone starts only after your action · it waits for you to finish before answering.</small>
     </aside>}
   </>;
 }

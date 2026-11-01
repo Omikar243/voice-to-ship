@@ -39,7 +39,7 @@
 
 - [x] **First-party traffic analytics and click-through reporting**
   - Count page views, visible control impressions and clicks, then calculate per-control click-through rate as clicks divided by impressions. Record every interactive link, button and option in the portfolio, including chapter navigation, experience choices, project expanders, lab modes/actions, Idea Engine controls, Decision Room options and contact links.
-  - Record anonymous events by default with a visible notice and an opt-out control. Do not store typed or pasted text, names, email addresses, raw IP addresses, user-agent strings or visitor identity. Do not forward event data to a third-party analytics provider.
+  - Record first-party events by default. Do not store typed or pasted text, names, email addresses, raw IP addresses, user-agent strings or visitor identity. Do not forward event data to a third-party analytics provider.
   - Store raw event rows for no longer than 30 days and retain longer-lived daily aggregate counts for traffic and per-control CTR. Do not count Preview traffic as live production traffic; label the two sources separately.
   - Provide an owner-only analytics dashboard behind Manus sign-in; public visitors must not be able to read analytics summaries. Preserve real login and role checks in Preview and production.
   - The managed development and published database are shared; distinguish Preview-originated records and avoid destructive testing or reset operations.
@@ -49,8 +49,7 @@
 - [x] **Full CV download and owner notification**
   - Add a clear download button that serves the exact full CV PDF supplied by Omkar, including its work-history and contact sections, as the downloadable file.
   - Only count `resume_download` after the complete attachment response finishes; show the download total separately from clicks/impressions so CV-download click-through rate is also visible.
-  - Visitors who opt out of analytics must not be added to the anonymous download total. After each completed download, send one notification to the Manus project owner using the built-in Manus owner-notification service; include no visitor identity, IP address, user-agent or typed content. Notification failure must not interrupt the download.
-  - The visible privacy notice must disclose the owner notification and clarify that opting out stops analytics counts but not the separately requested operational download notice.
+  - After each completed download, send one notification to the Manus project owner using the built-in Manus owner-notification service; include no visitor identity, IP address, user-agent or typed content. Notification failure must not interrupt the download.
   - The built-in owner-notification service confirms acceptance, not email delivery; keep that delivery limitation explicit.
 
 - [x] **Wispr hiring case, product/user analysis and speculative growth experiment**

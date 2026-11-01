@@ -55,7 +55,7 @@ export async function recordPersistentPerformanceSample(sampleSource, metricName
   try {
     await getPool().execute(
       `INSERT INTO performance_samples (app_env, sample_date, sample_source, metric_name, value_ms)
-       VALUES (?, UTC_DATE(), ?, ?, ?)`,
+       VALUES (?, CURRENT_DATE, ?, ?, ?)`,
       [environment, sampleSource, metricName, bounded],
     );
   } catch {
@@ -65,7 +65,7 @@ export async function recordPersistentPerformanceSample(sampleSource, metricName
 
 export async function cleanupPerformanceSamples() {
   try {
-    await getPool().execute('DELETE FROM performance_samples WHERE created_at < DATE_SUB(UTC_TIMESTAMP(6), INTERVAL 30 DAY)');
+    await getPool().execute("DELETE FROM performance_samples WHERE created_at < CURRENT_TIMESTAMP - INTERVAL '30 days'");
   } catch {
     // Cleanup is best effort.
   }
@@ -84,7 +84,7 @@ export async function readPerformanceHistory(req) {
   const [rows] = await getPool().execute(
     `SELECT sample_date, sample_source, metric_name, value_ms
      FROM performance_samples
-     WHERE app_env = ? AND sample_date >= DATE_SUB(UTC_DATE(), INTERVAL ? DAY)
+     WHERE app_env = ? AND sample_date >= CURRENT_DATE - (?::int * INTERVAL '1 day')
      ORDER BY sample_date ASC`,
     [appEnvironment, periodDays - 1],
   );

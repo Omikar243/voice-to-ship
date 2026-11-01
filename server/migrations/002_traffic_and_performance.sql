@@ -1,22 +1,23 @@
 CREATE TABLE IF NOT EXISTS analytics_source_daily_rollups (
-  app_env ENUM('preview', 'production') NOT NULL,
+  app_env VARCHAR(16) NOT NULL CHECK (app_env IN ('preview', 'production')),
   event_date DATE NOT NULL,
   source VARCHAR(32) NOT NULL,
   target_id VARCHAR(64) NOT NULL,
   event_type VARCHAR(32) NOT NULL,
-  event_count BIGINT UNSIGNED NOT NULL DEFAULT 0,
-  PRIMARY KEY (app_env, event_date, source, target_id, event_type),
-  KEY analytics_source_rollups_period (app_env, event_date),
-  KEY analytics_source_rollups_source (app_env, source, event_date)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  event_count BIGINT NOT NULL DEFAULT 0,
+  PRIMARY KEY (app_env, event_date, source, target_id, event_type)
+);
+CREATE INDEX IF NOT EXISTS analytics_source_rollups_period ON analytics_source_daily_rollups (app_env, event_date);
+CREATE INDEX IF NOT EXISTS analytics_source_rollups_source ON analytics_source_daily_rollups (app_env, source, event_date);
 
 CREATE TABLE IF NOT EXISTS performance_samples (
-  app_env ENUM('preview', 'production') NOT NULL,
+  app_env VARCHAR(16) NOT NULL CHECK (app_env IN ('preview', 'production')),
   sample_date DATE NOT NULL,
-  sample_source ENUM('server', 'browser') NOT NULL,
+  sample_source VARCHAR(16) NOT NULL CHECK (sample_source IN ('server', 'browser')),
   metric_name VARCHAR(128) NOT NULL,
-  value_ms DECIMAL(12, 3) NOT NULL,
-  created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  KEY performance_samples_retention (created_at),
-  KEY performance_samples_period (app_env, sample_date, sample_source, metric_name)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  value_ms NUMERIC(12, 3) NOT NULL,
+  created_at TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT performance_samples_source_metric CHECK (sample_source IN ('server', 'browser'))
+);
+CREATE INDEX IF NOT EXISTS performance_samples_retention ON performance_samples (created_at);
+CREATE INDEX IF NOT EXISTS performance_samples_period ON performance_samples (app_env, sample_date, sample_source, metric_name);
