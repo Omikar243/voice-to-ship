@@ -5,6 +5,7 @@ import { EvolvingSignal } from './components/EvolvingSignal';
 import { LenisRoot } from './components/LenisRoot';
 import { AnalyticsClient, analyticsEnabledForCurrentDevice, openAnalyticsSettings } from './components/AnalyticsClient';
 import { AnalyticsDashboard } from './components/AnalyticsDashboard';
+import { PerformanceMonitor } from './components/PerformanceMonitor';
 
 type Chapter = { id: string; label: string; short: string };
 
@@ -318,8 +319,9 @@ function App() {
                 <h2 id="story-title" className="section-title">Curiosity gives an idea <em>somewhere to go.</em></h2>
               </div>
               <div className="story__note">
-                <p>Omkar’s work sits between model behavior and the work a person actually finishes: retrieval systems, evaluation harnesses, product surfaces and the questions that make a build worth shipping.</p>
-                <div className="draft-note"><span className="draft-note__mark">PERSONAL TURNING POINT / INPUT NEEDED</span><p>The CV establishes the technical direction, but the moment that made building feel personal still belongs here. Add what caught his attention, what he tried, and what changed his mind.</p></div>
+                <p>I used to think the interesting part of machine learning was getting a model to make the right prediction. The work that changed my direction taught me to ask a harder question: can someone trust the system enough to use what it produces?</p>
+                <p>That question now follows me from semantic retrieval across thousands of merchant entities to a parity harness that makes regressions visible, and from a clinical-imaging prototype to a fashion product with real interfaces around the model. The model is only one part of the build. The rest is the evidence, the failure path, the correction cost and the small decision that helps a person move forward.</p>
+                <div className="draft-note"><span className="draft-note__mark">THE NEXT DETAIL / INPUT NEEDED</span><p>The work establishes the direction; the personal moment behind it still belongs here. Add the specific incident that made this shift feel real.</p></div>
                 <a className="text-link" href="#contact">Help me shape this chapter <Arrow /></a>
               </div>
             </div>
@@ -534,6 +536,7 @@ function App() {
           </section>
         </main>
         <AnalyticsClient />
+        <PerformanceMonitor />
       </div>
     </LenisRoot>
   );

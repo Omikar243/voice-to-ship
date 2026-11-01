@@ -20,6 +20,11 @@ import {
   startRetentionCleanup,
   validatePublicEvent,
 } from './analytics.js';
+import {
+  performanceMiddleware,
+  performanceSnapshot,
+  validateBrowserMetric,
+} from './performance.js';
 
 const serverDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(serverDirectory);
@@ -33,10 +38,16 @@ const ANALYTICS_WINDOW_MAX_EVENTS = 1_200;
 
 app.disable('x-powered-by');
 app.use(express.json({ limit: '2kb', strict: true }));
+app.use(performanceMiddleware);
 
 app.get('/api/health', (_req, res) => {
   if (!migrationReady) return res.status(503).json({ status: 'not_ready' });
-  return res.status(200).json({ status: 'ok' });
+  return res.status(200).json({ status: 'ok', performance: performanceSnapshot() });
+});
+
+app.post('/api/performance', (req, res) => {
+  if (!validateBrowserMetric(req.body)) return res.status(400).json({ error: 'Invalid performance metric' });
+  return res.status(202).json({ accepted: true });
 });
 
 app.post('/api/analytics/events', async (req, res) => {
