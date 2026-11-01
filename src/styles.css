@@ -102,6 +102,13 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px sol
 .blur-text__word { display: inline-block; }
 .hero__intro { max-width: 470px; margin: 34px 0 0; color: #d2d0c8; font-size: clamp(15px, 1.35vw, 18px); line-height: 1.65; }
 .hero__subline { margin: 11px 0 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.game-invite { display: grid; position: relative; grid-template-columns: 1fr 20px; gap: 6px 14px; width: min(100%, 470px); margin-top: 25px; padding: 15px 17px; border: 1px solid rgba(255,138,66,.55); color: var(--paper); background: rgba(255,138,66,.045); text-align: left; cursor: pointer; transition: background 180ms ease, border-color 180ms ease; }
+.game-invite:hover, .game-invite:focus-visible { border-color: var(--accent); background: rgba(255,138,66,.11); }
+.game-invite > span { grid-column: 1 / -1; color: var(--accent); font: 8px var(--mono); letter-spacing: .14em; }
+.game-invite strong { font: 400 25px/1 var(--serif); }
+.game-invite strong em { color: var(--accent); font-style: normal; }
+.game-invite small { color: var(--muted); font-size: 10px; }
+.game-invite .arrow-mark { grid-column: 2; grid-row: 2 / span 2; color: var(--accent); align-self: center; }
 .hero__signal-caption { display: flex; align-items: center; gap: 24px; margin-top: 33px; color: var(--muted); font-family: var(--mono); font-size: 8px; letter-spacing: 0.15em; }
 .hero__signal-caption span:first-child { color: var(--accent); }
 .hero__visual { position: absolute; top: 22%; right: clamp(20px, 8vw, 122px); z-index: 1; width: min(39vw, 510px); opacity: 0.83; pointer-events: none; }
@@ -433,3 +440,36 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px sol
 .site-footer__actions button { padding: 0; border: 0; border-bottom: 1px solid var(--rule); background: none; cursor: pointer; }
 .site-footer__actions a:hover, .site-footer__actions button:hover, .site-footer__actions a:focus-visible, .site-footer__actions button:focus-visible { color: var(--accent); }
 @media (max-width: 760px) { .site-footer__actions { grid-column: 1 / -1; justify-content: space-between; } }
+
+.game-launcher { position: fixed; right: 22px; bottom: 22px; z-index: 70; display: grid; gap: 4px; padding: 11px 13px; border: 1px solid var(--accent); color: var(--paper); background: rgba(16,16,15,.92); text-align: left; cursor: pointer; box-shadow: 0 8px 30px rgba(0,0,0,.25); }
+.game-launcher span { color: var(--accent); font: 8px var(--mono); letter-spacing: .14em; }
+.game-launcher strong { font-size: 12px; font-weight: 500; }
+.signal-lost { position: fixed; inset: 0; z-index: 110; overflow: auto; padding: clamp(22px, 5vw, 76px); background: #10100f; color: var(--paper); }
+.signal-lost__top, .signal-lost__footer { display: flex; align-items: center; justify-content: space-between; gap: 18px; color: var(--muted); font: 9px var(--mono); letter-spacing: .13em; text-transform: uppercase; }
+.signal-lost__top button { border: 0; border-bottom: 1px solid var(--rule); padding: 5px 0; color: var(--paper); background: none; cursor: pointer; font: inherit; }
+.signal-lost__top button:hover { color: var(--accent); }
+.signal-lost__landing, .signal-lost__play { width: min(920px, 100%); margin: 15vh auto 0; }
+.signal-lost__landing { max-width: 650px; }
+.signal-lost__landing h2 { margin: 18px 0 18px; font: 400 clamp(64px, 13vw, 156px)/.8 var(--serif); letter-spacing: -.06em; }
+.signal-lost__landing h2 em { color: var(--accent); font-style: normal; }
+.signal-lost__landing > p:not(.eyebrow) { max-width: 540px; color: #cbc9c1; font-size: 17px; line-height: 1.7; }
+.signal-lost__meta { display: flex; flex-wrap: wrap; gap: 15px 30px; margin: 35px 0 28px; color: var(--muted); font: 9px var(--mono); letter-spacing: .12em; }
+.signal-lost__hud { display: flex; justify-content: space-between; gap: 14px; color: var(--accent); font: 9px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+.signal-lost__progress { height: 2px; margin: 20px 0 45px; background: var(--rule); }
+.signal-lost__progress i { display: block; height: 100%; background: var(--accent); transition: width 250ms ease; }
+.signal-lost__board { min-height: 390px; padding: clamp(24px, 5vw, 62px); border: 1px solid var(--rule); background: radial-gradient(circle at 80% 20%, rgba(255,138,66,.09), transparent 34%), #151513; }
+.signal-lost__board h3 { margin: 0 0 14px; font: 400 clamp(36px, 6vw, 66px)/.95 var(--serif); }
+.signal-lost__board > p { max-width: 520px; color: var(--muted); line-height: 1.7; }
+.signal-patterns, .signal-nodes, .repair-grid, .signal-choice-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 40px; }
+.signal-nodes { grid-template-columns: repeat(4, 1fr); max-width: 620px; }
+.repair-grid { max-width: 720px; }
+.signal-pattern, .signal-nodes button, .repair-grid button, .signal-choice-row button { min-height: 90px; border: 1px solid var(--rule); color: var(--paper); background: transparent; cursor: pointer; font: 17px var(--mono); transition: border-color 180ms ease, background 180ms ease; }
+.signal-pattern:hover, .signal-nodes button:hover, .repair-grid button:hover, .signal-choice-row button:hover, .signal-nodes button.is-selected, .repair-grid button.is-selected { border-color: var(--accent); background: var(--accent-soft); }
+.repair-grid button { display: grid; gap: 6px; align-content: center; font: 15px var(--sans); }
+.repair-grid small { color: var(--muted); font: 9px var(--mono); text-transform: uppercase; }
+.signal-meter { position: relative; max-width: 620px; height: 22px; margin: 42px 0 28px; border: 1px solid var(--rule); background: linear-gradient(90deg, transparent 40%, rgba(255,138,66,.18) 40% 70%, transparent 70%); }
+.signal-meter i { display: block; height: 100%; background: var(--accent); opacity: .65; }
+.signal-meter span { position: absolute; inset: 5px 0 auto; color: var(--paper); font: 8px var(--mono); text-align: center; }
+.signal-lost__message { min-height: 20px; margin: 18px 0; color: var(--accent); font: 11px var(--mono); }
+.signal-lost__footer { margin-top: 30px; }
+@media (max-width: 760px) { .game-launcher { right: 12px; bottom: 12px; } .signal-lost { padding: 18px; } .signal-lost__top, .signal-lost__footer, .signal-lost__hud { flex-wrap: wrap; } .signal-lost__landing, .signal-lost__play { margin-top: 12vh; } .signal-patterns, .signal-choice-row { grid-template-columns: 1fr; } .signal-nodes { gap: 7px; } .signal-nodes button { min-height: 68px; } .repair-grid { grid-template-columns: 1fr; } .signal-lost__board { min-height: 420px; padding: 22px; } }

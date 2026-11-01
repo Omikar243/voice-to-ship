@@ -2,9 +2,23 @@ import { useCallback, useEffect, useState } from 'react';
 import './analytics.css';
 
 type Source = 'live' | 'preview';
-type Metrics = { pageViews: number; impressions: number; clicks: number; downloads: number; ctr: number };
+type Metrics = { visits: number; pageViews: number; impressions: number; clicks: number; downloads: number; ctr: number };
 type ControlMetric = { targetId: string; impressions: number; clicks: number; ctr: number };
+type SourceMetric = { source: string; visits: number; pageViews: number; impressions: number; clicks: number; ctr: number };
+type PerformancePoint = { date: string; sampleSource: 'server' | 'browser'; metric: string; samples: number; p50Ms: number; p95Ms: number };
 type Summary = { authenticated: true; periodDays: number; source: Source; totals: Metrics; controls: ControlMetric[] };
+type SourceSummary = { sources: SourceMetric[] };
+type PerformanceSummary = { series: PerformancePoint[] };
+
+function TrendChart({ points }: { points: PerformancePoint[] }) {
+  if (!points.length) return <p className="insights-empty">No historical performance samples yet.</p>;
+  const max = Math.max(...points.map((point) => point.p95Ms), 1);
+  const x = (index: number) => points.length === 1 ? 50 : (index / (points.length - 1)) * 100;
+  const y = (value: number) => 96 - Math.min(90, (value / max) * 90);
+  const p50 = points.map((point, index) => `${x(index)},${y(point.p50Ms)}`).join(' ');
+  const p95 = points.map((point, index) => `${x(index)},${y(point.p95Ms)}`).join(' ');
+  return <div className="insights-trend"><svg viewBox="0 0 100 100" role="img" aria-label="Historical p50 and p95 performance trend"><polyline className="trend-p95" points={p95} /><polyline className="trend-p50" points={p50} /></svg><div className="insights-trend__legend"><span><i className="trend-p50-key" />p50</span><span><i className="trend-p95-key" />p95</span><span>{points[0].date} → {points[points.length - 1].date}</span></div></div>;
+}
 
 function labelFor(targetId: string) {
   return targetId
@@ -17,6 +31,9 @@ export function AnalyticsDashboard() {
   const [days, setDays] = useState<7 | 30 | 90>(30);
   const [source, setSource] = useState<Source>('live');
   const [summary, setSummary] = useState<Summary | null>(null);
+  const [sourceSummary, setSourceSummary] = useState<SourceSummary | null>(null);
+  const [performance, setPerformance] = useState<PerformanceSummary | null>(null);
+  const [performanceMetric, setPerformanceMetric] = useState('LCP');
   const [loading, setLoading] = useState(true);
   const [signedOut, setSignedOut] = useState(false);
   const [error, setError] = useState('');
@@ -26,10 +43,9 @@ export function AnalyticsDashboard() {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch(`/api/analytics/summary?days=${days}&source=${source}`, {
-        credentials: 'same-origin',
-        headers: { Accept: 'application/json' },
-      });
+      const requests = ['/api/analytics/summary', '/api/analytics/sources', '/api/analytics/performance'].map((path) => fetch(`${path}?days=${days}&source=${source}`, { credentials: 'same-origin', headers: { Accept: 'application/json' } }));
+      const responses = await Promise.all(requests);
+      const response = responses[0];
       if (response.status === 401) {
         setSignedOut(true);
         setSummary(null);
@@ -42,8 +58,11 @@ export function AnalyticsDashboard() {
         return;
       }
       if (!response.ok) throw new Error('The analytics summary is temporarily unavailable.');
-      const next = await response.json() as Summary;
+      if (responses.some((item) => !item.ok)) throw new Error('The analytics summary is temporarily unavailable.');
+      const [next, nextSources, nextPerformance] = await Promise.all(responses.map((item) => item.json())) as [Summary, SourceSummary, PerformanceSummary];
       setSummary(next);
+      setSourceSummary(nextSources);
+      setPerformance(nextPerformance);
       setSignedOut(false);
     } catch {
       setError('Could not load the analytics summary. Try again in a moment.');
@@ -127,6 +146,7 @@ export function AnalyticsDashboard() {
             {loading ? <p className="insights-loading" role="status">Reading the latest counts…</p> : error ? <p className="insights-error" role="alert">{error} <button type="button" onClick={() => void loadSummary()}>Retry</button></p> : summary && (
               <>
                 <div className="insights-metrics" aria-label="Traffic summary">
+                  <article><span>VISIT STARTS</span><strong>{summary.totals.visits.toLocaleString('en-IN')}</strong><small>Anonymous session starts, not unique people</small></article>
                   <article><span>PAGE VIEWS</span><strong>{summary.totals.pageViews.toLocaleString('en-IN')}</strong><small>Not unique visitors</small></article>
                   <article><span>CONTROL IMPRESSIONS</span><strong>{summary.totals.impressions.toLocaleString('en-IN')}</strong><small>Visible for at least 0.7 seconds</small></article>
                   <article><span>CONTROL CLICKS</span><strong>{summary.totals.clicks.toLocaleString('en-IN')}</strong><small>Named links, buttons and options</small></article>
@@ -144,6 +164,14 @@ export function AnalyticsDashboard() {
                       </table>
                     </div>
                   )}
+                </section>
+                <section className="insights-controls insights-performance" aria-labelledby="performance-title">
+                  <div className="insights-controls__heading"><div><span className="insights-kicker">HISTORICAL PERFORMANCE</span><h2 id="performance-title">p50 / p95 over time</h2></div><label className="insights-select">Metric <select value={performanceMetric} onChange={(event) => setPerformanceMetric(event.target.value)}><option value="LCP">LCP</option><option value="FCP">FCP</option><option value="INP">INP</option><option value="CLS">CLS</option></select></label></div>
+                  <TrendChart points={(performance?.series ?? []).filter((point) => point.sampleSource === 'browser' && point.metric === performanceMetric)} />
+                </section>
+                <section className="insights-controls" aria-labelledby="sources-title">
+                  <div className="insights-controls__heading"><div><span className="insights-kicker">WHERE VISITS STARTED</span><h2 id="sources-title">Coarse traffic sources</h2></div><span className="insights-source-tag">NO REFERRER URLS STORED</span></div>
+                  <div className="insights-table-wrap"><table><thead><tr><th scope="col">SOURCE</th><th scope="col">VISITS</th><th scope="col">VIEWS</th><th scope="col">CLICKS</th><th scope="col">CTR</th></tr></thead><tbody>{(sourceSummary?.sources ?? []).map((item) => <tr key={item.source}><th scope="row">{labelFor(item.source)}</th><td>{item.visits.toLocaleString('en-IN')}</td><td>{item.pageViews.toLocaleString('en-IN')}</td><td>{item.clicks.toLocaleString('en-IN')}</td><td>{percent(item.ctr)}</td></tr>)}</tbody></table></div>
                 </section>
               </>
             )}

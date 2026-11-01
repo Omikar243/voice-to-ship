@@ -4,7 +4,7 @@ import path from 'node:path';
 import mysql from 'mysql2/promise';
 
 const migrationDirectory = path.join(path.dirname(fileURLToPath(import.meta.url)), 'migrations');
-const migrationList = ['001_analytics.sql'];
+const migrationList = ['001_analytics.sql', '002_traffic_and_performance.sql'];
 let pool;
 
 function databaseOptionsFromRuntime() {

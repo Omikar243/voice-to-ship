@@ -4,7 +4,8 @@ const TRACKING_KEY = 'voice-to-ship-analytics-off';
 const NOTICE_KEY = 'voice-to-ship-analytics-notice-dismissed';
 const CONTROL_SELECTOR = 'a[href], button:not([disabled]), [role="button"], [role="option"], [role="tab"], [role="radio"], [role="switch"]';
 
-type EventType = 'page_view' | 'impression' | 'click';
+type EventType = 'page_view' | 'visit_start' | 'impression' | 'click';
+type Source = 'direct' | 'search' | 'social' | 'github' | 'referral' | 'other';
 
 function readTrackingPreference() {
   try {
@@ -40,8 +41,22 @@ function makeControlId(control: HTMLElement) {
   return identifier;
 }
 
-function sendEvent(eventType: EventType, targetId: string) {
-  const payload = JSON.stringify({ eventType, targetId });
+function sourceBucket(): Source {
+  try {
+    const hostname = document.referrer ? new URL(document.referrer).hostname.toLowerCase() : '';
+    if (!hostname) return 'direct';
+    if (hostname.includes('google.') || hostname.includes('bing.') || hostname.includes('duckduckgo.')) return 'search';
+    if (hostname.includes('github.')) return 'github';
+    if (hostname.includes('linkedin.') || hostname.includes('twitter.') || hostname.includes('x.com') || hostname.includes('instagram.') || hostname.includes('facebook.')) return 'social';
+    if (hostname === window.location.hostname) return 'direct';
+    return 'referral';
+  } catch {
+    return 'other';
+  }
+}
+
+function sendEvent(eventType: EventType, targetId: string, source = sourceBucket()) {
+  const payload = JSON.stringify({ eventType, targetId, source });
   const body = new Blob([payload], { type: 'application/json' });
 
   try {
@@ -75,6 +90,14 @@ export function AnalyticsClient() {
 
     if (!pageViewSent.current) {
       sendEvent('page_view', 'portfolio-home');
+      try {
+        if (window.sessionStorage.getItem('vts-visit-started') !== 'true') {
+          sendEvent('visit_start', 'portfolio-visit');
+          window.sessionStorage.setItem('vts-visit-started', 'true');
+        }
+      } catch {
+        sendEvent('visit_start', 'portfolio-visit');
+      }
       pageViewSent.current = true;
     }
 
@@ -168,7 +191,7 @@ export function AnalyticsClient() {
     <aside className="analytics-notice" aria-label="Anonymous traffic analytics" data-analytics-ignore="true">
       <div className="analytics-notice__copy">
         <span className="analytics-notice__label">A SMALL PRIVACY NOTE</span>
-        <p>This site counts page views, visible controls, clicks and—when enabled—completed CV downloads to understand which parts are useful. The app does not store what you type, visitor identity, IP address or user-agent in its analytics records. Raw events expire after 30 days; daily totals remain. Each completed full-CV download also sends the owner a notice without identifying you; opting out stops analytics counts, not that operational notice.</p>
+        <p>This site counts page views, anonymous visit starts, visible controls, clicks and—when enabled—completed CV downloads to understand which parts are useful. It records only a coarse source category such as direct, search, social or referral; it does not store full referrer URLs, what you type, visitor identity, IP address or user-agent. Visit starts are not unique people. Raw events expire after 30 days; daily totals remain. Each completed full-CV download also sends the owner a notice without identifying you; opting out stops analytics counts, not that operational notice.</p>
       </div>
       <div className="analytics-notice__actions">
         <span className="analytics-notice__state">Anonymous counts are {trackingEnabled ? 'on' : 'off'} on this device.</span>

@@ -16,13 +16,17 @@ import {
 } from './auth.js';
 import {
   readAnalyticsSummary,
+  readTrafficSources,
   recordAnalyticsEvent,
   startRetentionCleanup,
   validatePublicEvent,
 } from './analytics.js';
 import {
+  cleanupPerformanceSamples,
   performanceMiddleware,
   performanceSnapshot,
+  readPerformanceHistory,
+  recordPersistentPerformanceSample,
   validateBrowserMetric,
 } from './performance.js';
 
@@ -47,6 +51,7 @@ app.get('/api/health', (_req, res) => {
 
 app.post('/api/performance', (req, res) => {
   if (!validateBrowserMetric(req.body)) return res.status(400).json({ error: 'Invalid performance metric' });
+  void recordPersistentPerformanceSample('browser', String(req.body.name).toUpperCase(), req.body.value);
   return res.status(202).json({ accepted: true });
 });
 
@@ -62,13 +67,23 @@ app.post('/api/analytics/events', async (req, res) => {
   }
   const event = validatePublicEvent(req.body);
   analyticsWindowEventCount += 1;
-  await recordAnalyticsEvent(event.eventType, event.targetId);
+  await recordAnalyticsEvent(event.eventType, event.targetId, event.source);
   res.status(202).json({ accepted: true });
 });
 
 app.get('/api/analytics/summary', async (req, res) => {
   const summary = await readAnalyticsSummary(req);
   res.status(200).json(summary);
+});
+
+app.get('/api/analytics/sources', async (req, res) => {
+  const summary = await readTrafficSources(req);
+  res.status(200).json(summary);
+});
+
+app.get('/api/analytics/performance', async (req, res) => {
+  const history = await readPerformanceHistory(req);
+  res.status(200).json(history);
 });
 
 app.post('/api/auth/start', async (req, res) => {
@@ -215,6 +230,7 @@ async function start() {
     await applyMigrations();
     migrationReady = true;
     startRetentionCleanup();
+    void cleanupPerformanceSamples();
     const server = app.listen(selectedPort(), '0.0.0.0');
     server.on('error', () => { process.exitCode = 1; });
   } catch {

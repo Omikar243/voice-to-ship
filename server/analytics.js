@@ -1,9 +1,10 @@
 import { getPool } from './database.js';
 import { resolveOwnerAuthentication, HttpError } from './auth.js';
 
-const PUBLIC_EVENT_TYPES = new Set(['page_view', 'impression', 'click']);
+const PUBLIC_EVENT_TYPES = new Set(['page_view', 'visit_start', 'impression', 'click']);
 const STORED_EVENT_TYPES = new Set([...PUBLIC_EVENT_TYPES, 'resume_download']);
 const TARGET_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$/;
+const SOURCE_PATTERN = /^(direct|search|social|github|referral|other)$/;
 const MAX_TRACKED_TARGETS_PER_ENV = 512;
 const environment = process.env.APP_ENV === 'production' ? 'production' : 'preview';
 
@@ -14,18 +15,19 @@ export function getAppEnvironment() {
 export function validatePublicEvent(body) {
   if (!body || typeof body !== 'object' || Array.isArray(body)) throw new HttpError(400, 'Invalid analytics event');
   const keys = Object.keys(body);
-  if (keys.length !== 2 || !keys.includes('eventType') || !keys.includes('targetId') ||
+  if (keys.length < 2 || keys.length > 3 || keys.some((key) => !['eventType', 'targetId', 'source'].includes(key)) || !keys.includes('eventType') || !keys.includes('targetId') ||
       !PUBLIC_EVENT_TYPES.has(body.eventType) || typeof body.targetId !== 'string' ||
-      !TARGET_ID_PATTERN.test(body.targetId)) {
+      !TARGET_ID_PATTERN.test(body.targetId) || (body.source !== undefined && (typeof body.source !== 'string' || !SOURCE_PATTERN.test(body.source)))) {
     throw new HttpError(400, 'Invalid analytics event');
   }
-  return { eventType: body.eventType, targetId: body.targetId };
+  return { eventType: body.eventType, targetId: body.targetId, source: body.source ?? 'direct' };
 }
 
-export async function recordAnalyticsEvent(eventType, targetId) {
+export async function recordAnalyticsEvent(eventType, targetId, source = 'direct') {
   if (!STORED_EVENT_TYPES.has(eventType) || typeof targetId !== 'string' || !TARGET_ID_PATTERN.test(targetId)) {
     throw new HttpError(400, 'Invalid analytics event');
   }
+  if (!SOURCE_PATTERN.test(source)) throw new HttpError(400, 'Invalid analytics source');
   const db = getPool();
   const connection = await db.getConnection();
   try {
@@ -53,6 +55,12 @@ export async function recordAnalyticsEvent(eventType, targetId) {
        VALUES (?, UTC_DATE(), ?, ?, 1)
        ON DUPLICATE KEY UPDATE event_count = event_count + 1`,
       [environment, targetId, eventType],
+    );
+    await connection.execute(
+      `INSERT INTO analytics_source_daily_rollups (app_env, event_date, source, target_id, event_type, event_count)
+       VALUES (?, UTC_DATE(), ?, ?, ?, 1)
+       ON DUPLICATE KEY UPDATE event_count = event_count + 1`,
+      [environment, source, targetId, eventType],
     );
     await connection.commit();
   } catch (error) {
@@ -115,6 +123,7 @@ export async function readAnalyticsSummary(req) {
   );
 
   let pageViews = 0;
+  let visits = 0;
   let impressions = 0;
   let clicks = 0;
   let downloads = 0;
@@ -122,6 +131,7 @@ export async function readAnalyticsSummary(req) {
   for (const row of rows) {
     const count = countAsNumber(row.event_count);
     if (row.event_type === 'page_view') pageViews += count;
+    else if (row.event_type === 'visit_start') visits += count;
     else if (row.event_type === 'impression') {
       impressions += count;
       const control = controlCounts.get(row.target_id) ?? { targetId: row.target_id, impressions: 0, clicks: 0 };
@@ -148,11 +158,46 @@ export async function readAnalyticsSummary(req) {
     source,
     totals: {
       pageViews,
+      visits,
       impressions,
       clicks,
       downloads,
       ctr: impressions === 0 ? 0 : clicks / impressions,
     },
     controls,
+  };
+}
+
+export async function readTrafficSources(req) {
+  const auth = await resolveOwnerAuthentication(req);
+  if (!auth.authenticated) throw new HttpError(401, 'Authentication required');
+  if (!auth.owner) throw new HttpError(403, 'Owner access required');
+  const periodDays = req.query.days === undefined ? 30 : Number(req.query.days);
+  if (![7, 30, 90].includes(periodDays)) throw new HttpError(400, 'Invalid summary period');
+  const source = req.query.source;
+  if (!['live', 'preview'].includes(source)) throw new HttpError(400, 'Invalid summary source');
+  const appEnvironment = source === 'live' ? 'production' : 'preview';
+  const [rows] = await getPool().execute(
+    `SELECT source, event_type, SUM(event_count) AS event_count
+     FROM analytics_source_daily_rollups
+     WHERE app_env = ? AND event_date >= DATE_SUB(UTC_DATE(), INTERVAL ? DAY)
+     GROUP BY source, event_type`,
+    [appEnvironment, periodDays - 1],
+  );
+  const sourceCounts = new Map();
+  for (const row of rows) {
+    const item = sourceCounts.get(row.source) ?? { source: row.source, visits: 0, pageViews: 0, impressions: 0, clicks: 0 };
+    const count = countAsNumber(row.event_count);
+    if (row.event_type === 'visit_start') item.visits += count;
+    else if (row.event_type === 'page_view') item.pageViews += count;
+    else if (row.event_type === 'impression') item.impressions += count;
+    else if (row.event_type === 'click') item.clicks += count;
+    sourceCounts.set(row.source, item);
+  }
+  return {
+    authenticated: true,
+    periodDays,
+    source,
+    sources: [...sourceCounts.values()].map((item) => ({ ...item, ctr: item.impressions ? item.clicks / item.impressions : 0 })),
   };
 }

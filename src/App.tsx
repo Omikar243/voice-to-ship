@@ -6,6 +6,7 @@ import { LenisRoot } from './components/LenisRoot';
 import { AnalyticsClient, analyticsEnabledForCurrentDevice, openAnalyticsSettings } from './components/AnalyticsClient';
 import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import { PerformanceMonitor } from './components/PerformanceMonitor';
+import { SignalLostGame } from './components/SignalLostGame';
 
 type Chapter = { id: string; label: string; short: string };
 
@@ -145,6 +146,7 @@ function App() {
   const [ideaAnswers, setIdeaAnswers] = useState<string[]>([]);
   const [decisionChoice, setDecisionChoice] = useState('discovery');
   const [copied, setCopied] = useState(false);
+  const [gameOpen, setGameOpen] = useState(false);
 
   useEffect(() => {
     const updateChapter = () => {
@@ -231,6 +233,8 @@ function App() {
   return (
     <LenisRoot>
       <div className="site-shell">
+        <button className="game-launcher" type="button" data-analytics-id="signal-lost-launcher" onClick={() => setGameOpen(true)}><span>PLAY A GAME</span><strong>Signal Lost ↗</strong></button>
+        {gameOpen && <SignalLostGame onExit={() => setGameOpen(false)} />}
         <a className="skip-link" href="#main-content">Skip to the portfolio</a>
         <EvolvingSignal
           activeChapter={activeChapter}
@@ -274,6 +278,7 @@ function App() {
               </h1>
               <p className="hero__intro">Data scientist by profession. Builder by instinct. Curious about what happens when ideas meet execution.</p>
               <p className="hero__subline">A journey through ideas, experiments, mistakes and things shipped.</p>
+              <button className="game-invite" type="button" data-analytics-id="signal-lost-hero-invite" onClick={() => setGameOpen(true)}><span>INTERACTIVE EXPERIENCE / AVAILABLE</span><strong>Signal <em>Lost.</em></strong><small>Can you turn chaos into something real? · 5 levels · no login</small><Arrow diagonal /></button>
               <div className="hero__signal-caption"><span>01 — THE SIGNAL</span><span>EVERY BUILD STARTS WITH A THOUGHT</span></div>
             </div>
 

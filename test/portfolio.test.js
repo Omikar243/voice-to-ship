@@ -12,10 +12,12 @@ import {
 beforeEach(() => resetPerformanceSamples());
 
 test('accepts only allowlisted anonymous analytics events', () => {
-  assert.deepEqual(validatePublicEvent({ eventType: 'click', targetId: 'idea-engine-step-1-option-a' }), {
+  assert.deepEqual(validatePublicEvent({ eventType: 'click', targetId: 'idea-engine-step-1-option-a', source: 'github' }), {
     eventType: 'click',
     targetId: 'idea-engine-step-1-option-a',
+    source: 'github',
   });
+  assert.equal(validatePublicEvent({ eventType: 'visit_start', targetId: 'portfolio-visit', source: 'direct' }).eventType, 'visit_start');
   assert.throws(() => validatePublicEvent({ eventType: 'click', targetId: 'visitor@example.com' }), /Invalid analytics event/);
   assert.throws(() => validatePublicEvent({ eventType: 'page_view', targetId: 'portfolio-home', visitor: 'nope' }), /Invalid analytics event/);
 });
