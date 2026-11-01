@@ -22,7 +22,7 @@
   - Use a thin warm-orange SVG stroke against deep charcoal, restrained glow only for active nodes, and low contrast for inactive sections. Keep animation responsive and modular, avoid excessive React state updates, and provide a static but beautiful line for reduced-motion users.
   - Use Lenis for smooth scrolling and synchronize the signal with scroll progress. Keep the signal itself SVG, not a 3D object. Any separate Vanta.js or Spline-inspired atmosphere must be understated and must not slow mobile.
 
-- [ ] **Story, work and learning chapters**
+- [x] **Story, work and learning chapters**
   - Include “The story” as a personal narrative, not a conventional education or employment timeline, with clearly labelled placeholders for missing facts.
   - Include “The work” with expandable project case studies structured around problem, ownership, decisions, process, outcome and evidence.
   - Include “The lab” for experiments and observations, including an interactive voice-versus-typing comparison.
@@ -30,7 +30,7 @@
   - Include “What I'm exploring” for current research questions and future interests.
   - Do not invent project metrics, employment history, achievements, testimonials or campaign results; use clearly labelled placeholders wherever information is missing. The complete uploaded CV is deliberately available as a separate download, rather than turning the portfolio story into a conventional employment timeline.
 
-- [ ] **Three signature experiences: Voice Lab, Idea Engine, Decision Room**
+- [x] **Three signature experiences: Voice Lab, Idea Engine, Decision Room**
   - Make the Voice Lab evidence for the challenge by showing a voice-versus-typing comparison. Do not request microphone access just to make the website feel voice-enabled, and do not autoplay audio.
   - Make the Idea Engine the signature optional experience: a 60-second challenge that is clearly a discovery interaction, not a gateway to work or hiring information.
   - Include the Decision Room as an interactive way to demonstrate product/growth thinking.
@@ -62,7 +62,7 @@
   - Discuss qualitative adoption frictions only as anecdotal user reports, not representative findings; include privacy, consent and no-transcript/audio collection as experiment guardrails.
   - Cite official product/research sources and identify third-party reviews as individual accounts. Keep the entire India growth idea speculative, not an existing Wispr campaign or established result.
 
-- [ ] **Contact and responsive quality**
+- [x] **Contact and responsive quality**
   - Provide contact access for LinkedIn, GitHub and email, with placeholders for any missing URLs or addresses.
   - Make the website responsive, fast, accessible and excellent on desktop and mobile.
   - Respect reduced-motion preferences and keep any separate background animation restrained; do not use a heavy 3D background that slows mobile.

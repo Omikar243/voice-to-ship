@@ -14,6 +14,7 @@ type Project = {
   title: string;
   category: string;
   context: string;
+  details: string[];
 };
 
 const chapters: Chapter[] = [
@@ -32,21 +33,24 @@ const projects: Project[] = [
     number: '01',
     title: 'Knee osteoarthritis detection using CNN',
     category: 'Computer vision / healthcare',
-    context: 'A human question behind an image-classification problem. The scope, ownership and evidence still need Omkar’s review.',
+    context: 'A CISC-2024 computer-vision project pairing X-ray classification with retrieval-augmented clinical context.',
+    details: ['Problem · Classify X-ray images while keeping recommendations grounded in peer-reviewed literature.', 'Ownership · Compact Vision Net design, image preprocessing and LLaMA-3 retrieval-augmented chatbot integration are listed in the supplied CV.', 'Evidence · The CV reports 90% accuracy across 13 classes and presentation at CISC-2024; dataset and evaluation protocol still need a public case-study link.'],
   },
   {
-    id: 'sustainable-data',
+    id: 'ancient-modern-apparel',
     number: '02',
-    title: 'Sustainability & financial data systems',
-    category: 'Applied data / responsible disclosure',
-    context: 'A real-world data problem. Public-safe details, personal contribution and outcomes are intentionally left open.',
+    title: 'Ancient Modern Apparel — fashion platform',
+    category: 'Full-stack product / generative 3D',
+    context: 'A shipped product connecting AI-assisted avatar generation, garment previews and a personalized catalog flow.',
+    details: ['Problem · Help people explore garments through a richer visual workflow than a flat catalog alone.', 'Ownership · The CV lists the Next.js, React, TypeScript and FastAPI build, Three.js rendering, auth, cart and deployment work.', 'Evidence · Stack and shipped surfaces are supplied in the CV; public product URL and contribution boundaries still need confirmation.'],
   },
   {
-    id: 'gridsfm',
+    id: 'catalysk-ai-systems',
     number: '03',
-    title: 'Risk-controlled GridSFM research',
-    category: 'Research in progress',
-    context: 'An ongoing question about balancing predictive performance with power-system feasibility. Confirm status before publication.',
+    title: 'Production AI systems at Catalysk',
+    category: 'Data science / retrieval / evaluation',
+    context: 'A production systems chapter spanning semantic retrieval, agentic classification and high-throughput feature pipelines.',
+    details: ['Problem · Make financial-intelligence models faster, more observable and safer to change.', 'Ownership · The CV describes Sentence-BERT + FAISS retrieval, a 4,535-sample parity harness, progressive routing and pipeline optimization.', 'Evidence · Reported CV figures include 17,500+ merchant entities and 300,000+ consumer records; employer-approved public wording remains to be confirmed.'],
   },
 ];
 
@@ -314,8 +318,8 @@ function App() {
                 <h2 id="story-title" className="section-title">Curiosity gives an idea <em>somewhere to go.</em></h2>
               </div>
               <div className="story__note">
-                <p>This should feel like a personal story, not a timeline. The first turning point is still yours to tell.</p>
-                <div className="draft-note"><span className="draft-note__mark">DRAFT / INPUT NEEDED</span><p>Add the moment that made building feel personal: what caught your attention, what you tried, and what changed your mind.</p></div>
+                <p>Omkar’s work sits between model behavior and the work a person actually finishes: retrieval systems, evaluation harnesses, product surfaces and the questions that make a build worth shipping.</p>
+                <div className="draft-note"><span className="draft-note__mark">PERSONAL TURNING POINT / INPUT NEEDED</span><p>The CV establishes the technical direction, but the moment that made building feel personal still belongs here. Add what caught his attention, what he tried, and what changed his mind.</p></div>
                 <a className="text-link" href="#contact">Help me shape this chapter <Arrow /></a>
               </div>
             </div>
@@ -357,7 +361,7 @@ function App() {
                       <div className="project-detail" id={`project-${project.id}-details`}>
                         <p className="project-detail__notice">CASE NOTES / PLACEHOLDERS TO REPLACE WITH VERIFIED DETAILS</p>
                         <div className="project-detail__fields">
-                          {projectFields.map(([label, body]) => <div key={label}><span>{label}</span><p>{label === 'Problem' ? project.context : body}</p></div>)}
+                          {projectFields.map(([label, body], index) => <div key={label}><span>{label}</span><p>{project.details[index] ?? (label === 'Problem' ? project.context : body)}</p></div>)}
                         </div>
                         <div className="project-detail__footer"><span>ROLE, LINKS AND OUTCOMES ARE NOT YET VERIFIED</span><span>NO METRICS INVENTED</span></div>
                       </div>
@@ -501,8 +505,8 @@ function App() {
               <p className="contact__copy">I'm interested in work where I can think, experiment, build, measure and own the outcome.</p>
               <div className="contact__links">
                 <a href="https://github.com/Omikar243" target="_blank" rel="noreferrer">GitHub <Arrow diagonal /><small>Omikar243</small></a>
-                <div className="contact-placeholder"><span>LinkedIn</span><small>Profile URL to add</small></div>
-                <div className="contact-placeholder"><span>Email</span><small>Address to add</small></div>
+                <a href="https://www.linkedin.com/in/omkar-shettigar-43035737a/" target="_blank" rel="noreferrer">LinkedIn <Arrow diagonal /><small>omkar-shettigar</small></a>
+                <a href="mailto:omikar243@gmail.com">Email <Arrow diagonal /><small>omikar243@gmail.com</small></a>
               </div>
               <a
                 className="button cv-download"
