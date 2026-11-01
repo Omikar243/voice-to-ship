@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 const TRACKING_KEY = 'voice-to-ship-analytics-off';
-const NOTICE_KEY = 'voice-to-ship-analytics-notice-dismissed';
 const CONTROL_SELECTOR = 'a[href], button:not([disabled]), [role="button"], [role="option"], [role="tab"], [role="radio"], [role="switch"]';
 
 type EventType = 'page_view' | 'visit_start' | 'impression' | 'click';
@@ -10,14 +9,6 @@ type Source = 'direct' | 'search' | 'social' | 'github' | 'referral' | 'other';
 function readTrackingPreference() {
   try {
     return window.localStorage.getItem(TRACKING_KEY) !== 'true';
-  } catch {
-    return true;
-  }
-}
-
-function readNoticePreference() {
-  try {
-    return window.localStorage.getItem(NOTICE_KEY) !== 'true';
   } catch {
     return true;
   }
@@ -75,15 +66,8 @@ function sendEvent(eventType: EventType, targetId: string, source = sourceBucket
 }
 
 export function AnalyticsClient() {
-  const [trackingEnabled, setTrackingEnabled] = useState(readTrackingPreference);
-  const [noticeOpen, setNoticeOpen] = useState(readNoticePreference);
+  const trackingEnabled = readTrackingPreference();
   const pageViewSent = useRef(false);
-
-  useEffect(() => {
-    const openSettings = () => setNoticeOpen(true);
-    window.addEventListener('vts:open-analytics-settings', openSettings);
-    return () => window.removeEventListener('vts:open-analytics-settings', openSettings);
-  }, []);
 
   useEffect(() => {
     if (!trackingEnabled || window.location.pathname === '/insights') return undefined;
@@ -161,49 +145,7 @@ export function AnalyticsClient() {
     };
   }, [trackingEnabled]);
 
-  const rememberNotice = () => {
-    try {
-      window.localStorage.setItem(NOTICE_KEY, 'true');
-    } catch {
-      // The setting still works for the current page when storage is unavailable.
-    }
-  };
-
-  const setTracking = (enabled: boolean) => {
-    setTrackingEnabled(enabled);
-    setNoticeOpen(false);
-    rememberNotice();
-    try {
-      window.localStorage.setItem(TRACKING_KEY, enabled ? 'false' : 'true');
-    } catch {
-      // The opt-out still applies until the current page is closed.
-    }
-  };
-
-  const dismiss = () => {
-    rememberNotice();
-    setNoticeOpen(false);
-  };
-
-  if (!noticeOpen || window.location.pathname === '/insights') return null;
-
-  return (
-    <aside className="analytics-notice" aria-label="Anonymous traffic analytics" data-analytics-ignore="true">
-      <div className="analytics-notice__copy">
-        <span className="analytics-notice__label">A SMALL PRIVACY NOTE</span>
-        <p>This site counts page views, anonymous visit starts, visible controls, clicks and—when enabled—completed CV downloads to understand which parts are useful. It records only a coarse source category such as direct, search, social or referral; it does not store full referrer URLs, what you type, visitor identity, IP address or user-agent. Visit starts are not unique people. Raw events expire after 30 days; daily totals remain. Each completed full-CV download also sends the owner a notice without identifying you; opting out stops analytics counts, not that operational notice.</p>
-      </div>
-      <div className="analytics-notice__actions">
-        <span className="analytics-notice__state">Anonymous counts are {trackingEnabled ? 'on' : 'off'} on this device.</span>
-        <button type="button" onClick={() => setTracking(!trackingEnabled)}>{trackingEnabled ? 'Turn off' : 'Turn on'} anonymous counts</button>
-        <button className="analytics-notice__close" type="button" aria-label="Close privacy note" onClick={dismiss}>Close</button>
-      </div>
-    </aside>
-  );
-}
-
-export function openAnalyticsSettings() {
-  window.dispatchEvent(new Event('vts:open-analytics-settings'));
+  return null;
 }
 
 export function analyticsEnabledForCurrentDevice() {

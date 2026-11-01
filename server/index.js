@@ -35,6 +35,7 @@ const projectDirectory = path.dirname(serverDirectory);
 const resumeFilePath = path.join(serverDirectory, 'assets', 'Omkar_Shettigar_Profile.pdf');
 const app = express();
 let migrationReady = false;
+let readyPromise;
 let analyticsWindowStartedAt = Date.now();
 let analyticsWindowEventCount = 0;
 const ANALYTICS_WINDOW_MS = 60_000;
@@ -227,10 +228,7 @@ function selectedPort() {
 
 async function start() {
   try {
-    await applyMigrations();
-    migrationReady = true;
-    startRetentionCleanup();
-    void cleanupPerformanceSamples();
+    await ensureReady();
     const server = app.listen(selectedPort(), '0.0.0.0');
     server.on('error', () => { process.exitCode = 1; });
   } catch {
@@ -239,9 +237,20 @@ async function start() {
   }
 }
 
+async function ensureReady() {
+  if (!readyPromise) {
+    readyPromise = applyMigrations().then(() => {
+      migrationReady = true;
+      startRetentionCleanup();
+      void cleanupPerformanceSamples();
+    });
+  }
+  return readyPromise;
+}
+
 const currentFile = fileURLToPath(import.meta.url);
 if (process.argv[1] && path.resolve(process.argv[1]) === currentFile) {
   void start();
 }
 
-export { app, start };
+export { app, start, ensureReady };

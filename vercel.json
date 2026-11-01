@@ -1,0 +1,10 @@
+{
+  "rewrites": [
+    { "source": "/insights", "destination": "/index.html" }
+  ],
+  "functions": {
+    "api/[...path].js": {
+      "runtime": "nodejs22.x"
+    }
+  }
+}

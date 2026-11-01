@@ -3,10 +3,11 @@ import { Atmosphere } from './components/Atmosphere';
 import { BlurText } from './components/BlurText';
 import { EvolvingSignal } from './components/EvolvingSignal';
 import { LenisRoot } from './components/LenisRoot';
-import { AnalyticsClient, analyticsEnabledForCurrentDevice, openAnalyticsSettings } from './components/AnalyticsClient';
+import { AnalyticsClient, analyticsEnabledForCurrentDevice } from './components/AnalyticsClient';
 import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import { PerformanceMonitor } from './components/PerformanceMonitor';
 import { SignalLostGame } from './components/SignalLostGame';
+import { VoiceAgent } from './components/VoiceAgent';
 
 type Chapter = { id: string; label: string; short: string };
 
@@ -235,6 +236,7 @@ function App() {
       <div className="site-shell">
         <button className="game-launcher" type="button" data-analytics-id="signal-lost-launcher" onClick={() => setGameOpen(true)}><span>PLAY A GAME</span><strong>Signal Lost ↗</strong></button>
         {gameOpen && <SignalLostGame onExit={() => setGameOpen(false)} />}
+        <VoiceAgent onPlayGame={() => setGameOpen(true)} />
         <a className="skip-link" href="#main-content">Skip to the portfolio</a>
         <EvolvingSignal
           activeChapter={activeChapter}
@@ -534,7 +536,6 @@ function App() {
               <span>VOICE TO SHIP / OMKAR SHETTIGAR</span>
               <span>BUILT A LITTLE AT A TIME · BENGALURU, IN</span>
               <div className="site-footer__actions">
-                <button type="button" onClick={openAnalyticsSettings}>Analytics settings</button>
                 <a href="#hero">Back to the signal <Arrow /></a>
               </div>
             </footer>
