@@ -71,7 +71,12 @@ export async function answerVoiceQuestion(question) {
     throw error;
   }
 
-  const response = config.provider === 'gemini' ? await requestGemini(config, question) : await requestOpenAI(config, question);
+  let response;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    response = config.provider === 'gemini' ? await requestGemini(config, question) : await requestOpenAI(config, question);
+    if (response.ok || config.provider !== 'gemini' || ![429, 503].includes(response.status) || attempt === 2) break;
+    await new Promise((resolve) => setTimeout(resolve, 350 * (attempt + 1)));
+  }
   if (!response.ok) {
     const error = new Error('Voice agent provider request failed');
     error.status = response.status === 429 ? 429 : 502;
