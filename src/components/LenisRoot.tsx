@@ -1,12 +1,14 @@
 import { useEffect, type ReactNode } from 'react';
-import Lenis from 'lenis';
 
 type LenisRootProps = { children: ReactNode };
+
+type LenisInstance = { destroy: () => void };
 
 export function LenisRoot({ children }: LenisRootProps) {
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let instance: Lenis | null = null;
+    let instance: LenisInstance | null = null;
+    let disposed = false;
 
     const syncPreference = () => {
       if (preference.matches) {
@@ -16,11 +18,9 @@ export function LenisRoot({ children }: LenisRootProps) {
       }
 
       if (!instance) {
-        instance = new Lenis({
-          autoRaf: true,
-          lerp: 0.085,
-          smoothWheel: true,
-          syncTouch: false,
+        void import('lenis').then(({ default: Lenis }) => {
+          if (disposed || preference.matches || instance) return;
+          instance = new Lenis({ autoRaf: true, lerp: 0.085, smoothWheel: true, syncTouch: false });
         });
       }
     };
@@ -28,6 +28,7 @@ export function LenisRoot({ children }: LenisRootProps) {
     syncPreference();
     preference.addEventListener('change', syncPreference);
     return () => {
+      disposed = true;
       preference.removeEventListener('change', syncPreference);
       instance?.destroy();
     };

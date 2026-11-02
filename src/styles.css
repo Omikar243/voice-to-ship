@@ -99,7 +99,7 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px sol
 .hero-title__last { display: flex; align-items: baseline; gap: 0.23em; }
 .hero-title__last em { color: var(--accent); font-weight: 400; }
 .blur-text { display: inline; }
-.blur-text__word { display: inline-block; }
+.blur-text__word { display: inline-block; opacity: 0; filter: blur(7px); transform: translateY(13px); animation: blur-text-in 780ms cubic-bezier(.22,1,.36,1) forwards; }
 .hero__intro { max-width: 470px; margin: 34px 0 0; color: #d2d0c8; font-size: clamp(15px, 1.35vw, 18px); line-height: 1.65; }
 .hero__subline { margin: 11px 0 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
 .game-invite { display: grid; position: relative; grid-template-columns: 1fr 20px; gap: 6px 14px; width: min(100%, 470px); margin-top: 25px; padding: 15px 17px; border: 1px solid rgba(255,138,66,.55); color: var(--paper); background: rgba(255,138,66,.045); text-align: left; cursor: pointer; transition: background 180ms ease, border-color 180ms ease; }
@@ -326,6 +326,7 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px sol
 @keyframes node-pulse { 0%, 100% { opacity: 0.78; transform: scale(0.88); } 50% { opacity: 1; transform: scale(1.28); } }
 @keyframes line-breathe { 0%, 100% { transform: scaleX(0.78); opacity: 0.65; } 50% { transform: scaleX(1); opacity: 1; } }
 @keyframes reveal-down { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes blur-text-in { from { opacity: 0; filter: blur(7px); transform: translateY(13px); } to { opacity: 1; filter: blur(0); transform: translateY(0); } }
 
 @media (max-width: 1080px) {
   .section-shell { padding-left: clamp(95px, 13vw, 155px); padding-right: clamp(28px, 6vw, 70px); }

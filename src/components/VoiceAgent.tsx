@@ -56,13 +56,24 @@ export function VoiceAgent({ onPlayGame }: VoiceAgentProps) {
     window.speechSynthesis.speak(utterance);
   };
 
-  const answer = (input: string) => {
-    const result = getAnswer(input);
+  const answer = async (input: string) => {
     setState('thinking');
-    window.setTimeout(() => {
+    try {
+      const response = await fetch('/api/voice/answer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: input.slice(0, 900) }),
+      });
+      if (!response.ok) throw new Error('Voice agent unavailable');
+      const result = await response.json() as { text?: string; action?: 'game' };
+      if (!result.text) throw new Error('Voice agent returned no answer');
       speak(result.text);
       if (result.action === 'game') window.setTimeout(onPlayGame, 500);
-    }, 220);
+    } catch {
+      const fallback = getAnswer(input);
+      speak(`The reasoning agent is temporarily unavailable. ${fallback.text}`);
+      if (fallback.action === 'game') window.setTimeout(onPlayGame, 500);
+    }
   };
 
   const stopListening = () => {

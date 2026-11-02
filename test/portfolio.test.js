@@ -8,6 +8,7 @@ import {
   resetPerformanceSamples,
   validateBrowserMetric,
 } from '../server/performance.js';
+import { validateVoiceQuestion } from '../server/voiceAgent.js';
 
 beforeEach(() => resetPerformanceSamples());
 
@@ -27,6 +28,13 @@ test('accepts bounded browser metrics and rejects unsafe payloads', () => {
   assert.equal(validateBrowserMetric({ name: 'user-agent', value: 10 }), false);
   assert.equal(validateBrowserMetric({ name: 'CLS', value: -1 }), false);
   assert.equal(validateBrowserMetric({ name: 'INP', value: 120001 }), false);
+});
+
+test('accepts bounded voice questions and rejects malformed requests', () => {
+  assert.equal(validateVoiceQuestion({ question: 'What did Omkar build?' }), true);
+  assert.equal(validateVoiceQuestion({ question: ' '.repeat(901) }), false);
+  assert.equal(validateVoiceQuestion({ question: 42 }), false);
+  assert.equal(validateVoiceQuestion({ question: 'Play Signal Lost' }), true);
 });
 
 test('summarizes request and browser performance without identity data', () => {

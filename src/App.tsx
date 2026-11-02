@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Atmosphere } from './components/Atmosphere';
 import { BlurText } from './components/BlurText';
 import { EvolvingSignal } from './components/EvolvingSignal';
 import { LenisRoot } from './components/LenisRoot';
 import { AnalyticsClient } from './components/AnalyticsClient';
-import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import { PerformanceMonitor } from './components/PerformanceMonitor';
-import { SignalLostGame } from './components/SignalLostGame';
 import { VoiceAgent } from './components/VoiceAgent';
+
+const AnalyticsDashboard = lazy(() => import('./components/AnalyticsDashboard').then(({ AnalyticsDashboard: component }) => ({ default: component })));
+const SignalLostGame = lazy(() => import('./components/SignalLostGame').then(({ SignalLostGame: component }) => ({ default: component })));
 
 type Chapter = { id: string; label: string; short: string };
 
@@ -229,13 +230,13 @@ function App() {
     }
   };
 
-  if (window.location.pathname === '/insights') return <AnalyticsDashboard />;
+  if (window.location.pathname === '/insights') return <Suspense fallback={<main className="insights-shell"><p className="insights-loading">Loading insights…</p></main>}><AnalyticsDashboard /></Suspense>;
 
   return (
     <LenisRoot>
       <div className="site-shell">
         <button className="game-launcher" type="button" data-analytics-id="signal-lost-launcher" onClick={() => setGameOpen(true)}><span>PLAY A GAME</span><strong>Signal Lost ↗</strong></button>
-        {gameOpen && <SignalLostGame onExit={() => setGameOpen(false)} />}
+        {gameOpen && <Suspense fallback={null}><SignalLostGame onExit={() => setGameOpen(false)} /></Suspense>}
         <VoiceAgent onPlayGame={() => setGameOpen(true)} />
         <a className="skip-link" href="#main-content">Skip to the portfolio</a>
         <EvolvingSignal

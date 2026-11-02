@@ -29,6 +29,7 @@ import {
   recordPersistentPerformanceSample,
   validateBrowserMetric,
 } from './performance.js';
+import { answerVoiceQuestion, validateVoiceQuestion } from './voiceAgent.js';
 
 const serverDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.dirname(serverDirectory);
@@ -54,6 +55,12 @@ app.post('/api/performance', (req, res) => {
   if (!validateBrowserMetric(req.body)) return res.status(400).json({ error: 'Invalid performance metric' });
   void recordPersistentPerformanceSample('browser', String(req.body.name).toUpperCase(), req.body.value);
   return res.status(202).json({ accepted: true });
+});
+
+app.post('/api/voice/answer', async (req, res) => {
+  if (!validateVoiceQuestion(req.body)) return res.status(400).json({ error: 'Invalid voice question' });
+  const answer = await answerVoiceQuestion(req.body.question);
+  return res.status(200).json(answer);
 });
 
 app.post('/api/analytics/events', async (req, res) => {
