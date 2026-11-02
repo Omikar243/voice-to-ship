@@ -1,5 +1,6 @@
 const MAX_INPUT_LENGTH = 900;
 const MAX_OUTPUT_TOKENS = 260;
+const PROVIDER_TIMEOUT_MS = 10_000;
 const MODEL = process.env.VOICE_AGENT_MODEL || 'gemini-3.8-flash';
 
 const systemPrompt = `You are the voice guide for Voice to Ship, Omkar Shettigar's interactive portfolio.
@@ -45,7 +46,7 @@ async function requestGemini(config, question) {
       contents: [{ role: 'user', parts: [{ text: question.trim() }] }],
       generationConfig: { maxOutputTokens: MAX_OUTPUT_TOKENS, temperature: 0.4 },
     }),
-    signal: AbortSignal.timeout(15_000),
+    signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
   });
 }
 
@@ -59,7 +60,7 @@ async function requestOpenAI(config, question) {
       reasoning: { effort: 'low' },
       max_completion_tokens: MAX_OUTPUT_TOKENS,
     }),
-    signal: AbortSignal.timeout(15_000),
+    signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
   });
 }
 
@@ -72,14 +73,23 @@ export async function answerVoiceQuestion(question) {
   }
 
   let response;
+  let lastStatus;
   for (let attempt = 0; attempt < 3; attempt += 1) {
-    response = config.provider === 'gemini' ? await requestGemini(config, question) : await requestOpenAI(config, question);
-    if (response.ok || config.provider !== 'gemini' || ![429, 503].includes(response.status) || attempt === 2) break;
-    await new Promise((resolve) => setTimeout(resolve, 350 * (attempt + 1)));
+    if (attempt > 0) await new Promise((resolve) => setTimeout(resolve, 350 * attempt));
+    try {
+      response = config.provider === 'gemini' ? await requestGemini(config, question) : await requestOpenAI(config, question);
+    } catch {
+      response = undefined;
+      lastStatus = undefined;
+      continue;
+    }
+    if (response.ok || config.provider !== 'gemini' || ![429, 503].includes(response.status)) break;
+    lastStatus = response.status;
+    response = undefined;
   }
-  if (!response.ok) {
+  if (!response || !response.ok) {
     const error = new Error('Voice agent provider request failed');
-    error.status = response.status === 429 ? 429 : 502;
+    error.status = lastStatus === 429 || response?.status === 429 ? 429 : 502;
     throw error;
   }
   const payload = await response.json();

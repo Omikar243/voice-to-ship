@@ -8,7 +8,7 @@ import {
   resetPerformanceSamples,
   validateBrowserMetric,
 } from '../server/performance.js';
-import { validateVoiceQuestion } from '../server/voiceAgent.js';
+import { answerVoiceQuestion, validateVoiceQuestion } from '../server/voiceAgent.js';
 
 beforeEach(() => resetPerformanceSamples());
 
@@ -35,6 +35,44 @@ test('accepts bounded voice questions and rejects malformed requests', () => {
   assert.equal(validateVoiceQuestion({ question: ' '.repeat(901) }), false);
   assert.equal(validateVoiceQuestion({ question: 42 }), false);
   assert.equal(validateVoiceQuestion({ question: 'Play Signal Lost' }), true);
+});
+
+const geminiAnswer = { candidates: [{ content: { parts: [{ text: 'Omkar builds things to understand how they work.' }] } }] };
+
+test('retries network failures and capacity responses before answering', async () => {
+  process.env.GEMINI_API_KEY = 'test-key';
+  const originalFetch = globalThis.fetch;
+  let calls = 0;
+  globalThis.fetch = async () => {
+    calls += 1;
+    if (calls === 1) throw new Error('network unreachable');
+    if (calls === 2) return { ok: false, status: 503, json: async () => ({}) };
+    return { ok: true, status: 200, json: async () => geminiAnswer };
+  };
+  try {
+    const answer = await answerVoiceQuestion('What did Omkar build?');
+    assert.equal(answer.text, 'Omkar builds things to understand how they work.');
+    assert.equal(answer.model, 'gemini-3.8-flash');
+    assert.equal(calls, 3);
+  } finally {
+    globalThis.fetch = originalFetch;
+    delete process.env.GEMINI_API_KEY;
+  }
+});
+
+test('maps persistent provider failures to 502 instead of an unhandled crash', async () => {
+  process.env.GEMINI_API_KEY = 'test-key';
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => { throw new Error('provider timeout'); };
+  try {
+    await assert.rejects(() => answerVoiceQuestion('What did Omkar build?'), (error) => {
+      assert.equal(error.status, 502);
+      return true;
+    });
+  } finally {
+    globalThis.fetch = originalFetch;
+    delete process.env.GEMINI_API_KEY;
+  }
 });
 
 test('summarizes request and browser performance without identity data', () => {
