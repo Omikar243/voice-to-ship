@@ -1,7 +1,7 @@
 const MAX_INPUT_LENGTH = 900;
 const MAX_OUTPUT_TOKENS = 260;
 const PROVIDER_TIMEOUT_MS = 10_000;
-const MODEL = process.env.VOICE_AGENT_MODEL || 'gemini-3.8-flash';
+const MODEL = process.env.VOICE_AGENT_MODEL || 'gemini-flash-lite-latest';
 
 const systemPrompt = `You are the voice guide for Voice to Ship, Omkar Shettigar's interactive portfolio.
 Answer naturally, briefly, and conversationally in 1–3 sentences. Only use the verified facts below; if the visitor asks for something not covered, say you do not have that detail rather than inventing it.
