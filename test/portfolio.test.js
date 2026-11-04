@@ -87,7 +87,7 @@ test('summarizes request and browser performance without identity data', () => {
 
 test('keeps the about story and verified case-study anchors present', async () => {
   const source = await readFile(new URL('../src/App.tsx', import.meta.url), 'utf8');
-  assert.match(source, /can someone trust the system enough to use what it produces/);
+  assert.match(source, /a score alone does not explain what changed/);
   assert.match(source, /Knee osteoarthritis detection using CNN/);
   assert.match(source, /Ancient Modern Apparel/);
   assert.match(source, /Production AI systems at Catalysk/);

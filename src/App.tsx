@@ -39,7 +39,7 @@ const projects: Project[] = [
     title: 'Knee osteoarthritis detection using CNN',
     category: 'Computer vision / healthcare',
     context: 'A CISC-2024 computer-vision project pairing X-ray classification with retrieval-augmented clinical context.',
-    details: ['Problem · Classify X-ray images while keeping recommendations grounded in peer-reviewed literature.', 'Ownership · Compact Vision Net design, image preprocessing and LLaMA-3 retrieval-augmented chatbot integration are listed in the supplied CV.', 'Evidence · The CV reports 90% accuracy across 13 classes and presentation at CISC-2024; dataset and evaluation protocol still need a public case-study link.'],
+    details: ['Problem · Classify radiographic knee osteoarthritis while keeping clinical recommendations grounded in peer-reviewed literature.', 'Ownership · Built the Compact Vision Net, domain-specific PEFT/LoRA fine-tuning and preprocessing with CLAHE, gamma correction and Gaussian smoothing.', 'Technical approach · Combined a 13-class CNN classifier with a LLaMA-3 RAG assistant using LangChain and Groq.', 'Results · Resume-reported 90% classification accuracy across 13 pathology classes and 97 ms inference after preprocessing; presented at CISC-2024.', 'Scope · The public portfolio summarizes the reported result; dataset splits and the full evaluation protocol are not included here.'],
   },
   {
     id: 'ancient-modern-apparel',
@@ -47,7 +47,7 @@ const projects: Project[] = [
     title: 'Ancient Modern Apparel — fashion platform',
     category: 'Full-stack product / generative 3D',
     context: 'A shipped product connecting AI-assisted avatar generation, garment previews and a personalized catalog flow.',
-    details: ['Problem · Help people explore garments through a richer visual workflow than a flat catalog alone.', 'Ownership · The CV lists the Next.js, React, TypeScript and FastAPI build, Three.js rendering, auth, cart and deployment work.', 'Evidence · Stack and shipped surfaces are supplied in the CV; public product URL and contribution boundaries still need confirmation.'],
+    details: ['Problem · Help people explore garments through AI-assisted avatars, 3D previews and a personalized catalog workflow.', 'Ownership · Built the full-stack product across the Next.js 15, React 19, TypeScript and Tailwind frontend and Python FastAPI backend.', 'Technical approach · Added four-view avatar synthesis, real-time Three.js / React Three Fiber garment rendering, REST APIs and Drizzle ORM with Turso.', 'Results · Shipped authentication, session management, catalog and cart workflows, Supabase asset storage and Vercel CI/CD deployment.', 'Scope · The resume confirms the stack and shipped surfaces; contribution boundaries for each product area are not expanded further.'],
   },
   {
     id: 'catalysk-ai-systems',
@@ -55,16 +55,16 @@ const projects: Project[] = [
     title: 'Production AI systems at Catalysk',
     category: 'Data science / retrieval / evaluation',
     context: 'A production systems chapter spanning semantic retrieval, agentic classification and high-throughput feature pipelines.',
-    details: ['Problem · Make financial-intelligence models faster, more observable and safer to change.', 'Ownership · The CV describes Sentence-BERT + FAISS retrieval, a 4,535-sample parity harness, progressive routing and pipeline optimization.', 'Evidence · Reported CV figures include 17,500+ merchant entities and 300,000+ consumer records; employer-approved public wording remains to be confirmed.'],
+    details: ['Problem · Make financial-intelligence classification faster, safer to change and more useful for analyst review.', 'Ownership · At Catalysk, built progressive routing, composable skill modules, hybrid RAG retrieval, counterparty guardrails and evaluation harnesses.', 'Technical approach · Combined deterministic rules, Sentence-BERT, FAISS, Ollama / LLaMA / Gemma, structured JSON contracts, LRU caching and async Python pipelines.', 'Results · Resume-reported 94% runtime reduction from 2,160s to 125s across 300,000+ records, 6.8× classification-latency speedup, and retrieval across 17,500+ entities.', 'Scope · Also built a 4,535-sample bit-for-bit parity harness and CI/CD validation gates; employer-sensitive implementation details stay intentionally high-level.'],
   },
 ];
 
 const projectFields = [
-  ['Problem', 'Add the specific problem and who experienced it.'],
-  ['Ownership', 'Separate what Omkar owned from what the wider team did.'],
-  ['Decisions', 'Add one consequential decision and the trade-off behind it.'],
-  ['Process', 'Describe the experiments, revisions and tools that mattered.'],
-  ['Outcome & evidence', 'Add only verified, public-safe results or links. No metrics have been supplied.'],
+  ['Problem', 'What needed to become more useful, reliable or fast?'],
+  ['Ownership', 'What Omkar owned in the build or investigation.'],
+  ['Technical approach', 'The models, systems and trade-offs behind the work.'],
+  ['Results', 'Resume-reported outcomes, with units and limits.'],
+  ['Scope', 'What is confirmed, and what is intentionally not claimed.'],
 ];
 
 const ideaRounds = [
@@ -251,7 +251,7 @@ function App() {
             <span className="wordmark__symbol" aria-hidden="true"><span /><span /><span /><i /></span>
             <span className="wordmark__text">VOICE <b>TO</b> SHIP</span>
           </a>
-          <div className="header-meta"><span>OMKAR SHETTIGAR</span><span className="header-meta__dot" /><span>BENGALURU, IN</span></div>
+          <div className="header-meta"><span>OMKAR SHETTIGAR</span><span className="header-meta__dot" /><span>MUMBAI, IN</span></div>
           <div className="header-actions">
             <a className="header-shortcut" href="#work">Skip to work <Arrow diagonal /></a>
             <button className="chapter-toggle" type="button" aria-expanded={menuOpen} aria-controls="chapter-menu" onClick={() => setMenuOpen((open) => !open)}>
@@ -274,15 +274,15 @@ function App() {
           <section className="hero section-shell" id="hero" data-chapter="hero">
             <Atmosphere />
             <div className="hero__copy">
-              <p className="eyebrow hero__eyebrow"><span className="eyebrow-dot" /> AN INTERACTIVE DOCUMENTARY <span className="eyebrow-separator">/</span> A BUILDER IN BENGALURU</p>
+              <p className="eyebrow hero__eyebrow"><span className="eyebrow-dot" /> AN INTERACTIVE DOCUMENTARY <span className="eyebrow-separator">/</span> A BUILDER IN MUMBAI</p>
               <h1 aria-label="I build things to understand how they work.">
                 <span className="hero-title__line"><BlurText text="I build things" delay={0.035} /></span>
                 <span className="hero-title__line"><BlurText text="to understand" delay={0.06} /></span>
                 <span className="hero-title__line hero-title__last"><BlurText text="how they" delay={0.08} /> <em><BlurText text="work." delay={0.1} /></em></span>
               </h1>
-              <p className="hero__intro">Data scientist by profession. Builder by instinct. Curious about what happens when ideas meet execution.</p>
+              <p className="hero__intro">Data Scientist &amp; AI/ML Engineer with two years of experience building production-grade LLM systems, agentic AI and retrieval pipelines.</p>
               <p className="hero__subline">A journey through ideas, experiments, mistakes and things shipped.</p>
-              <button className="game-invite" type="button" data-analytics-id="signal-lost-hero-invite" onClick={() => setGameOpen(true)}><span>INTERACTIVE EXPERIENCE / AVAILABLE</span><strong>Signal <em>Lost.</em></strong><small>Can you turn chaos into something real? · 5 levels · no login</small><Arrow diagonal /></button>
+              <button className="game-invite" type="button" data-analytics-id="signal-lost-hero-invite" onClick={() => setGameOpen(true)}><span>INTERACTIVE EXPERIENCE / AVAILABLE</span><strong>Signal <em>Lost.</em></strong><small>Can you turn chaos into something real? · 8 levels · no login</small><Arrow diagonal /></button>
               <div className="hero__signal-caption"><span>01 — THE SIGNAL</span><span>EVERY BUILD STARTS WITH A THOUGHT</span></div>
             </div>
 
@@ -328,10 +328,10 @@ function App() {
                 <h2 id="story-title" className="section-title">Curiosity gives an idea <em>somewhere to go.</em></h2>
               </div>
               <div className="story__note">
-                <p>I used to think the interesting part of machine learning was getting a model to make the right prediction. The work that changed my direction taught me to ask a harder question: can someone trust the system enough to use what it produces?</p>
-                <p>That question now follows me from semantic retrieval across thousands of merchant entities to a parity harness that makes regressions visible, and from a clinical-imaging prototype to a fashion product with real interfaces around the model. The model is only one part of the build. The rest is the evidence, the failure path, the correction cost and the small decision that helps a person move forward.</p>
-                <div className="draft-note"><span className="draft-note__mark">THE NEXT DETAIL / INPUT NEEDED</span><p>The work establishes the direction; the personal moment behind it still belongs here. Add the specific incident that made this shift feel real.</p></div>
-                <a className="text-link" href="#contact">Help me shape this chapter <Arrow /></a>
+                <p>I started with the visible part of machine learning: making a prediction. Working on production financial-intelligence systems changed the question. When a pipeline regresses, a score alone does not explain what changed, how much correction it creates, or whether an analyst can trust the result.</p>
+                <p>That is why my work now moves between agentic routing, Sentence-BERT and FAISS retrieval, high-throughput Python pipelines, and evaluation harnesses that make prediction drift visible. The same instinct appears in my CISC-2024 clinical RAG project and in Ancient Modern Apparel: connect the model to a usable system, measure the failure path, and ship the smallest proof.</p>
+                <div className="draft-note"><span className="draft-note__mark">EDUCATION / EARLY EXPERIENCE</span><p>B.E. in Artificial Intelligence and Data Science from Visvesvaraya Technological University, Jan 2021–Jan 2025 · GPA 8.44 / 10.0. Earlier, at SM Khannukar Associates, I built an LSTM/RNN stock-forecasting pipeline and a 30-day backtest reported at 85% directional accuracy.</p></div>
+                <a className="text-link" href="#work">See the resume-grounded work <Arrow /></a>
               </div>
             </div>
           </section>
@@ -370,18 +370,18 @@ function App() {
                     </button>
                     {expanded && (
                       <div className="project-detail" id={`project-${project.id}-details`}>
-                        <p className="project-detail__notice">CASE NOTES / PLACEHOLDERS TO REPLACE WITH VERIFIED DETAILS</p>
+                        <p className="project-detail__notice">CASE NOTES / RESUME-GROUNDED SUMMARY</p>
                         <div className="project-detail__fields">
                           {projectFields.map(([label, body], index) => <div key={label}><span>{label}</span><p>{project.details[index] ?? (label === 'Problem' ? project.context : body)}</p></div>)}
                         </div>
-                        <div className="project-detail__footer"><span>ROLE, LINKS AND OUTCOMES ARE NOT YET VERIFIED</span><span>NO METRICS INVENTED</span></div>
+                        <div className="project-detail__footer"><span>SELECTED FROM CURRENT RESUME</span><span>LIMITS STATED WHERE NEEDED</span></div>
                       </div>
                     )}
                   </article>
                 );
               })}
             </div>
-            <div className="work__endnote"><span className="signal-dot" /> Each story will distinguish what I did, what the team did, and what remains unfinished.</div>
+            <div className="work__endnote"><span className="signal-dot" /> Selected work is grounded in the attached resume; employer-sensitive implementation details remain intentionally high-level.</div>
           </section>
 
           <section className="lab section-shell chapter-section" id="lab" data-chapter="lab" aria-labelledby="lab-title">
@@ -453,9 +453,9 @@ function App() {
             <div className="section-label"><span>05</span><span>THE INTERRUPTION</span><span className="section-label__line" /></div>
             <div className="lessons__grid">
               <div><p className="eyebrow">THE HONEST BIT</p><h2 id="lessons-title" className="section-title">Sometimes the useful thing is finding out <em>what doesn't work.</em></h2></div>
-              <div className="lessons__placeholder"><span className="draft-note__mark">REAL EXAMPLE NEEDED</span><p>A specific assumption, decision or technical approach belongs here. No invented “weakness” and no polished failure story.</p><a className="text-link" href="#contact">Add a lesson from the work <Arrow /></a></div>
+              <div className="lessons__placeholder"><span className="draft-note__mark">LESSON FROM PRODUCTION</span><p>When an architectural change introduced prediction mismatches, I did not treat the model score as enough evidence. I built a 4,535-sample bit-for-bit golden parity and decision-trace harness, then paired it with CI/CD and pre-release validation gates so regressions became visible before release.</p><a className="text-link" href="#work">Read the systems chapter <Arrow /></a></div>
             </div>
-            <div className="research-note" id="exploring"><div><span className="eyebrow">WHAT I'M EXPLORING / DRAFT</span><h3>Accuracy is not the whole story.</h3></div><p>A research note in the source brief asks how predictive performance should be considered alongside power-system feasibility. Confirm whether this is still current and what can be shared.</p><span className="research-note__flag">STATUS TO CONFIRM</span></div>
+            <div className="research-note" id="exploring"><div><span className="eyebrow">TOOLS I WORK WITH</span><h3>Systems, not just models.</h3></div><p>Python, SQL, TypeScript, FastAPI, LangGraph, LangChain, MCP, RAG, Sentence-BERT, FAISS, Ollama, LLaMA, Gemma, PyTorch, scikit-learn, XGBoost, MLflow, Docker, AWS, GCP, Azure, PostgreSQL, MySQL, Supabase, Turso and Vercel.</p><span className="research-note__flag">RESUME / SELECTED STACK</span></div>
           </section>
 
           <section className="wispr section-shell chapter-section" id="wispr" data-chapter="wispr" aria-labelledby="wispr-title">
@@ -530,7 +530,7 @@ function App() {
             </div>
             <footer className="site-footer">
               <span>VOICE TO SHIP / OMKAR SHETTIGAR</span>
-              <span>BUILT A LITTLE AT A TIME · BENGALURU, IN</span>
+              <span>BUILT A LITTLE AT A TIME · MUMBAI, IN</span>
               <div className="site-footer__actions">
                 <a href="#hero">Back to the signal <Arrow /></a>
               </div>
