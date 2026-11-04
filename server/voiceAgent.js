@@ -44,7 +44,12 @@ async function requestGemini(config, question) {
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: systemPrompt }] },
       contents: [{ role: 'user', parts: [{ text: question.trim() }] }],
-      generationConfig: { maxOutputTokens: MAX_OUTPUT_TOKENS, temperature: 0.4 },
+      generationConfig: {
+        maxOutputTokens: MAX_OUTPUT_TOKENS,
+        temperature: 0.4,
+        // Voice replies need visible text; do not spend the small free-tier budget on hidden thoughts.
+        thinkingConfig: { thinkingBudget: 0 },
+      },
     }),
     signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
   });
@@ -97,9 +102,12 @@ export async function answerVoiceQuestion(question) {
     ? payload?.candidates?.[0]?.content?.parts?.map((part) => part.text).filter(Boolean).join(' ')
     : payload?.choices?.[0]?.message?.content;
   if (typeof text !== 'string' || !text.trim()) {
-    const error = new Error('Voice agent returned no answer');
-    error.status = 502;
-    throw error;
+    return {
+      text: 'I can help you explore Omkar’s projects, the Signal Lost game, or how to get in touch. What would you like to know?',
+      action: localAction(question),
+      model: config.provider === 'gemini' ? MODEL : config.model,
+      fallback: true,
+    };
   }
   return { text: text.trim().slice(0, 900), action: localAction(question), model: config.provider === 'gemini' ? MODEL : config.model };
 }
