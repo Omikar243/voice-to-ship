@@ -93,3 +93,12 @@ test('keeps the about story and verified case-study anchors present', async () =
   assert.match(source, /Production AI systems in sustainable finance/);
   assert.match(source, /linkedin\.com\/in\/omkar-shettigar-43035737a/);
 });
+
+test('includes the five-language selector and refined palette', async () => {
+  const app = await readFile(new URL('../src/App.tsx', import.meta.url), 'utf8');
+  const styles = await readFile(new URL('../src/styles.css', import.meta.url), 'utf8');
+  for (const marker of ['English', 'हिन्दी', 'मराठी', 'ಕನ್ನಡ', 'தமிழ்']) assert.match(app, new RegExp(marker));
+  assert.match(app, /voice-to-ship-locale/);
+  assert.match(styles, /--cobalt: #3167d9/);
+  assert.match(styles, /--lime: #d4ff24/);
+});

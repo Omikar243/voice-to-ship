@@ -9,6 +9,9 @@
   --rule-soft: rgba(240, 238, 232, 0.09);
   --accent: #ff8a42;
   --accent-soft: rgba(255, 138, 66, 0.16);
+  --cobalt: #3167d9;
+  --cobalt-soft: rgba(49, 103, 217, 0.16);
+  --lime: #d4ff24;
   --serif: 'Iowan Old Style', 'Palatino Linotype', Baskerville, Georgia, serif;
   --sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --mono: 'SFMono-Regular', Menlo, Consolas, monospace;
@@ -68,6 +71,9 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px sol
 .header-meta { display: flex; align-items: center; gap: 11px; margin-left: clamp(22px, 5vw, 82px); color: var(--muted); font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; }
 .header-meta__dot { width: 3px; height: 3px; border-radius: 50%; background: var(--accent); }
 .header-actions { display: flex; align-items: center; gap: 28px; margin-left: auto; }
+.language-selector { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font: 8px var(--mono); letter-spacing: .11em; text-transform: uppercase; }
+.language-selector select { max-width: 104px; padding: 8px 22px 8px 9px; border: 1px solid var(--rule); border-radius: 0; color: var(--paper); background: var(--ink-raised); font: 9px var(--mono); letter-spacing: .04em; cursor: pointer; }
+.language-selector select:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; }
 .header-shortcut { display: inline-flex; align-items: center; gap: 6px; color: var(--paper); font-size: 12px; transition: color 180ms ease; }
 .header-shortcut:hover { color: var(--accent); }
 .arrow-mark { display: inline-block; width: 17px; height: 17px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; }
@@ -109,6 +115,7 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px sol
 .game-invite strong em { color: var(--accent); font-style: normal; }
 .game-invite small { color: var(--muted); font-size: 10px; }
 .game-invite .arrow-mark { grid-column: 2; grid-row: 2 / span 2; color: var(--accent); align-self: center; }
+.game-launcher strong { color: var(--lime); }
 .hero__signal-caption { display: flex; align-items: center; gap: 24px; margin-top: 33px; color: var(--muted); font-family: var(--mono); font-size: 8px; letter-spacing: 0.15em; }
 .hero__signal-caption span:first-child { color: var(--accent); }
 .hero__visual { position: absolute; top: 22%; right: clamp(20px, 8vw, 122px); z-index: 1; width: min(39vw, 510px); opacity: 0.83; pointer-events: none; }
@@ -257,6 +264,7 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px sol
 .research-note__flag { align-self: start; color: var(--accent); font-family: var(--mono); font-size: 8px; letter-spacing: 0.12em; white-space: nowrap; }
 
 .wispr { padding-bottom: 125px; }
+.wispr .section-label > span:first-child, .wispr .eyebrow { color: var(--cobalt); }
 .wispr__heading { display: grid; grid-template-columns: 1.1fr 0.55fr; gap: 70px; align-items: end; }
 .wispr__heading > p { max-width: 355px; margin: 0 0 6px; color: var(--muted); font-size: 12px; line-height: 1.7; }
 .wispr-evidence { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 39px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
@@ -277,7 +285,7 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px sol
 .wispr-skills > span { color: var(--accent); font-family: var(--mono); font-size: 8px; letter-spacing: 0.12em; }
 .wispr-skills ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px 24px; margin: 17px 0 0; padding: 0; list-style: none; }
 .wispr-skills li { position: relative; padding-left: 14px; }
-.wispr-skills li::before { position: absolute; top: 0.48em; left: 0; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); content: ''; }
+.wispr-skills li::before { position: absolute; top: 0.48em; left: 0; width: 5px; height: 5px; border-radius: 50%; background: var(--cobalt); content: ''; }
 .wispr-skills strong { display: block; color: #e7e2d9; font-size: 11px; font-weight: 500; }
 .wispr-skills small { display: block; margin-top: 4px; color: var(--muted); font-size: 9px; line-height: 1.55; }
 .wispr-concept__measurement { padding-left: 26px; border-left: 1px solid var(--rule); }
@@ -357,6 +365,8 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px sol
   .wordmark__symbol { transform: scale(0.9); transform-origin: left center; }
   .header-meta { display: none; }
   .header-actions { gap: 16px; }
+  .language-selector > span { display: none; }
+  .language-selector select { max-width: 76px; padding-left: 6px; padding-right: 14px; font-size: 8px; }
   .header-shortcut { font-size: 10px; }
   .header-shortcut .arrow-mark { width: 14px; height: 14px; }
   .chapter-toggle { gap: 8px; padding-left: 11px; font-size: 10px; }

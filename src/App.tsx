@@ -12,6 +12,42 @@ const AnalyticsDashboard = lazy(() => import('./components/AnalyticsDashboard').
 const SignalLostGame = lazy(() => import('./components/SignalLostGame').then(({ SignalLostGame: component }) => ({ default: component })));
 
 type Chapter = { id: string; label: string; short: string };
+type Locale = 'en' | 'hi' | 'mr' | 'kn' | 'ta';
+
+const localeOptions: { id: Locale; label: string; nativeLabel: string }[] = [
+  { id: 'en', label: 'English', nativeLabel: 'EN' },
+  { id: 'hi', label: 'हिन्दी', nativeLabel: 'हिं' },
+  { id: 'mr', label: 'मराठी', nativeLabel: 'मर' },
+  { id: 'kn', label: 'ಕನ್ನಡ', nativeLabel: 'ಕನ್ನಡ' },
+  { id: 'ta', label: 'தமிழ்', nativeLabel: 'தமிழ்' },
+];
+
+const uiCopy: Record<Locale, {
+  chapters: string[];
+  heroEyebrow: string;
+  heroIntro: string;
+  heroSubline: string;
+  showWork: string;
+  showThinking: string;
+  showLearning: string;
+  chooseTitle: string;
+  chooseNote: string;
+  storyEyebrow: string;
+  storyTitle: string;
+  workEyebrow: string;
+  workTitle: string;
+  workLead: string;
+  contactEyebrow: string;
+  contactTitle: string;
+  contactCopy: string;
+  language: string;
+}> = {
+  en: { chapters: ['The Signal', 'The Direction', 'The Connections', 'The Exploration', 'The Interruption', 'The Convergence', 'The Loop'], heroEyebrow: 'AN INTERACTIVE DOCUMENTARY / A BUILDER IN MUMBAI', heroIntro: 'Data Scientist & AI/ML Engineer with two years of experience building production-grade LLM systems, agentic AI and retrieval pipelines.', heroSubline: 'A journey through ideas, experiments, mistakes and things shipped.', showWork: "Show me what I've built", showThinking: 'Show me how I think', showLearning: "Show me what I've learned", chooseTitle: 'Choose your experience.', chooseNote: 'For a quick read: projects, how I think, then say hello.', storyEyebrow: 'THE PERSON BEHIND THE WORK', storyTitle: 'Curiosity gives an idea somewhere to go.', workEyebrow: "THINGS I'VE TAKEN FROM IDEA TO REALITY", workTitle: 'An idea becomes something when you build.', workLead: 'Open a case note to see the problem, ownership, decisions, process and evidence.', contactEyebrow: 'ONE IDEA SHIPPED. ANOTHER BEGINS.', contactTitle: "Don't just read what I can do. Let's build something.", contactCopy: "I'm interested in work where I can think, experiment, build, measure and own the outcome.", language: 'Language' },
+  hi: { chapters: ['संकेत', 'दिशा', 'संबंध', 'खोज', 'विराम', 'मेल', 'चक्र'], heroEyebrow: 'एक इंटरैक्टिव डॉक्यूमेंट्री / मुंबई का बिल्डर', heroIntro: 'डेटा साइंटिस्ट और AI/ML इंजीनियर, जो प्रोडक्शन LLM सिस्टम, एजेंटिक AI और retrieval pipelines बनाते हैं।', heroSubline: 'विचारों, प्रयोगों, गलतियों और शिप किए गए काम की यात्रा।', showWork: 'मैंने क्या बनाया देखें', showThinking: 'मैं कैसे सोचता हूँ देखें', showLearning: 'मैंने क्या सीखा देखें', chooseTitle: 'अपना अनुभव चुनें।', chooseNote: 'जल्दी पढ़ने के लिए: प्रोजेक्ट्स, सोचने का तरीका, फिर संपर्क करें।', storyEyebrow: 'काम के पीछे का व्यक्ति', storyTitle: 'जिज्ञासा किसी विचार को दिशा देती है।', workEyebrow: 'विचार से वास्तविकता तक', workTitle: 'बनाने पर ही विचार कुछ बनता है।', workLead: 'समस्या, स्वामित्व, निर्णय और प्रमाण देखने के लिए केस नोट खोलें।', contactEyebrow: 'एक विचार शिप हुआ। दूसरा शुरू होता है।', contactTitle: 'सिर्फ पढ़ें नहीं कि मैं क्या कर सकता हूँ। साथ मिलकर बनाते हैं।', contactCopy: 'मुझे ऐसे काम में रुचि है जहाँ मैं सोचूँ, प्रयोग करूँ, बनाऊँ, मापूँ और परिणाम की जिम्मेदारी लूँ।', language: 'भाषा' },
+  mr: { chapters: ['संकेत', 'दिशा', 'संबंध', 'शोध', 'विराम', 'संगम', 'फेरा'], heroEyebrow: 'एक संवादात्मक डॉक्युमेंटरी / मुंबईतील बिल्डर', heroIntro: 'डेटा सायंटिस्ट आणि AI/ML इंजिनिअर; प्रोडक्शन LLM सिस्टम्स, एजेंटिक AI आणि retrieval pipelines तयार करण्याचा अनुभव.', heroSubline: 'कल्पना, प्रयोग, चुका आणि प्रत्यक्षात आणलेल्या कामांचा प्रवास.', showWork: 'मी काय बनवले ते पहा', showThinking: 'मी कसा विचार करतो ते पहा', showLearning: 'मी काय शिकलो ते पहा', chooseTitle: 'तुमचा अनुभव निवडा.', chooseNote: 'थोडक्यात: प्रोजेक्ट्स, विचार करण्याची पद्धत, मग संपर्क करा.', storyEyebrow: 'कामामागील व्यक्ती', storyTitle: 'कुतूहलाला कल्पनेला दिशा देऊ द्या.', workEyebrow: 'कल्पनेपासून प्रत्यक्ष कामापर्यंत', workTitle: 'बनवल्यावरच कल्पना आकार घेते.', workLead: 'समस्या, जबाबदारी, निर्णय आणि पुरावे पाहण्यासाठी केस नोट उघडा.', contactEyebrow: 'एक कल्पना शिप झाली. दुसरी सुरू होते.', contactTitle: 'मी काय करू शकतो हे फक्त वाचू नका. चला, काहीतरी बनवूया.', contactCopy: 'जिथे विचार, प्रयोग, बांधणी, मोजमाप आणि परिणामाची जबाबदारी घेता येते अशा कामात मला रस आहे.', language: 'भाषा' },
+  kn: { chapters: ['ಸಂಕೇತ', 'ದಿಕ್ಕು', 'ಸಂಪರ್ಕಗಳು', 'ಅನ್ವೇಷಣೆ', 'ವಿರಾಮ', 'ಸಂಗಮ', 'ಚಕ್ರ'], heroEyebrow: 'ಒಂದು ಸಂವಾದಾತ್ಮಕ ಡಾಕ್ಯುಮೆಂಟರಿ / ಮುಂಬೈನ ಬಿಲ್ಡರ್', heroIntro: 'ಪ್ರೊಡಕ್ಷನ್ LLM ಸಿಸ್ಟಮ್‌ಗಳು, ಏಜೆಂಟಿಕ್ AI ಮತ್ತು retrieval pipelines ನಿರ್ಮಿಸುವ ಡೇಟಾ ಸೈಂಟಿಸ್ಟ್ ಮತ್ತು AI/ML ಎಂಜಿನಿಯರ್.', heroSubline: 'ಆಲೋಚನೆಗಳು, ಪ್ರಯೋಗಗಳು, ತಪ್ಪುಗಳು ಮತ್ತು ಶಿಪ್ ಮಾಡಿದ ಕೆಲಸದ ಪ್ರಯಾಣ.', showWork: 'ನಾನು ನಿರ್ಮಿಸಿದುದನ್ನು ನೋಡಿ', showThinking: 'ನಾನು ಹೇಗೆ ಯೋಚಿಸುತ್ತೇನೆ ನೋಡಿ', showLearning: 'ನಾನು ಕಲಿತುದನ್ನು ನೋಡಿ', chooseTitle: 'ನಿಮ್ಮ ಅನುಭವ ಆಯ್ಕೆಮಾಡಿ.', chooseNote: 'ತ್ವರಿತ ಓದಿಗೆ: ಪ್ರಾಜೆಕ್ಟ್‌ಗಳು, ನನ್ನ ಚಿಂತನೆ, ನಂತರ ಸಂಪರ್ಕಿಸಿ.', storyEyebrow: 'ಕೆಲಸದ ಹಿಂದಿರುವ ವ್ಯಕ್ತಿ', storyTitle: 'ಕುತೂಹಲವು ಆಲೋಚನೆಗೆ ದಾರಿ ನೀಡುತ್ತದೆ.', workEyebrow: 'ಆಲೋಚನೆಯಿಂದ ವಾಸ್ತವಕ್ಕೆ', workTitle: 'ನಿರ್ಮಿಸಿದಾಗಲೇ ಆಲೋಚನೆ ರೂಪ ಪಡೆಯುತ್ತದೆ.', workLead: 'ಸಮಸ್ಯೆ, ಹೊಣೆಗಾರಿಕೆ, ನಿರ್ಧಾರ ಮತ್ತು ಸಾಕ್ಷ್ಯ ನೋಡಲು ಕೇಸ್ ನೋಟ್ ತೆರೆಯಿರಿ.', contactEyebrow: 'ಒಂದು ಆಲೋಚನೆ ಶಿಪ್ ಆಯಿತು. ಇನ್ನೊಂದು ಆರಂಭವಾಗುತ್ತದೆ.', contactTitle: 'ನಾನು ಏನು ಮಾಡಬಲ್ಲೆ ಎಂದು ಓದುವುದಷ್ಟೇ ಬೇಡ. ಒಟ್ಟಿಗೆ ನಿರ್ಮಿಸೋಣ.', contactCopy: 'ಯೋಚಿಸಲು, ಪ್ರಯೋಗಿಸಲು, ನಿರ್ಮಿಸಲು, ಅಳೆಯಲು ಮತ್ತು ಫಲಿತಾಂಶದ ಹೊಣೆ ಹೊರುವ ಕೆಲಸದಲ್ಲಿ ನನಗೆ ಆಸಕ್ತಿ.', language: 'ಭಾಷೆ' },
+  ta: { chapters: ['சிக்னல்', 'திசை', 'இணைப்புகள்', 'ஆராய்ச்சி', 'இடைவேளை', 'சங்கமம்', 'சுழற்சி'], heroEyebrow: 'ஒரு ஊடாடும் ஆவணம் / மும்பையின் உருவாக்குநர்', heroIntro: 'Production LLM அமைப்புகள், agentic AI மற்றும் retrieval pipelines உருவாக்கும் Data Scientist & AI/ML Engineer.', heroSubline: 'யோசனைகள், பரிசோதனைகள், தவறுகள் மற்றும் வெளியிட்ட பணிகளின் பயணம்.', showWork: 'நான் உருவாக்கியதைப் பாருங்கள்', showThinking: 'நான் எப்படி சிந்திக்கிறேன் பாருங்கள்', showLearning: 'நான் கற்றதைப் பாருங்கள்', chooseTitle: 'உங்கள் அனுபவத்தைத் தேர்ந்தெடுக்கவும்.', chooseNote: 'விரைவாகப் படிக்க: திட்டங்கள், என் சிந்தனை, பின்னர் தொடர்பு கொள்ளுங்கள்.', storyEyebrow: 'பணிக்குப் பின்னால் இருக்கும் நபர்', storyTitle: 'ஆர்வம் ஒரு யோசனைக்கு செல்லும் வழியைத் தருகிறது.', workEyebrow: 'யோசனையிலிருந்து நிஜத்திற்கு', workTitle: 'உருவாக்கும்போதுதான் யோசனை வடிவம் பெறுகிறது.', workLead: 'சிக்கல், உரிமை, முடிவுகள் மற்றும் ஆதாரங்களைப் பார்க்க கேஸ் நோட்டைத் திறக்கவும்.', contactEyebrow: 'ஒரு யோசனை வெளியானது. இன்னொன்று தொடங்குகிறது.', contactTitle: 'நான் என்ன செய்ய முடியும் என்று மட்டும் படிக்க வேண்டாம். ஒன்றாக உருவாக்குவோம்.', contactCopy: 'சிந்திக்கவும், பரிசோதிக்கவும், உருவாக்கவும், அளக்கவும், முடிவுக்குப் பொறுப்பேற்கவும் கூடிய பணிகளில் எனக்கு ஆர்வம்.', language: 'மொழி' },
+};
 
 type Project = {
   id: string;
@@ -150,6 +186,16 @@ function App() {
   const [decisionChoice, setDecisionChoice] = useState('discovery');
   const [copied, setCopied] = useState(false);
   const [gameOpen, setGameOpen] = useState(false);
+  const [locale, setLocale] = useState<Locale>(() => {
+    const saved = window.localStorage.getItem('voice-to-ship-locale') as Locale | null;
+    return saved && localeOptions.some((option) => option.id === saved) ? saved : 'en';
+  });
+  const copy = uiCopy[locale];
+
+  useEffect(() => {
+    window.localStorage.setItem('voice-to-ship-locale', locale);
+    document.documentElement.lang = locale === 'en' ? 'en' : locale;
+  }, [locale]);
 
   useEffect(() => {
     const updateChapter = () => {
@@ -253,17 +299,18 @@ function App() {
           </a>
           <div className="header-meta"><span>OMKAR SHETTIGAR</span><span className="header-meta__dot" /><span>MUMBAI, IN</span></div>
           <div className="header-actions">
-            <a className="header-shortcut" href="#work">Skip to work <Arrow diagonal /></a>
+            <label className="language-selector"><span>{copy.language}</span><select aria-label={copy.language} value={locale} onChange={(event) => setLocale(event.target.value as Locale)}>{localeOptions.map((option) => <option value={option.id} key={option.id}>{option.nativeLabel} · {option.label}</option>)}</select></label>
+            <a className="header-shortcut" href="#work">{copy.showWork} <Arrow diagonal /></a>
             <button className="chapter-toggle" type="button" aria-expanded={menuOpen} aria-controls="chapter-menu" onClick={() => setMenuOpen((open) => !open)}>
               <span>{menuOpen ? 'Close' : 'Chapters'}</span><span className={`menu-glyph ${menuOpen ? 'is-open' : ''}`} aria-hidden="true"><i /><i /></span>
             </button>
           </div>
           {menuOpen && (
             <nav className="chapter-menu" id="chapter-menu" aria-label="Chapter navigation">
-              <p className="eyebrow">FOLLOW THE SIGNAL</p>
+              <p className="eyebrow">{copy.heroEyebrow.split(' / ')[0]}</p>
               {chapters.map((chapter) => (
                 <a key={chapter.id} href={`#${chapter.id}`} className={activeChapter === chapter.id ? 'is-current' : ''} onClick={() => setMenuOpen(false)}>
-                  <span>{chapter.short}</span>{chapter.label}<Arrow diagonal />
+                  <span>{chapter.short}</span>{copy.chapters[Number(chapter.short) - 1]}<Arrow diagonal />
                 </a>
               ))}
             </nav>
@@ -274,14 +321,14 @@ function App() {
           <section className="hero section-shell" id="hero" data-chapter="hero">
             <Atmosphere />
             <div className="hero__copy">
-              <p className="eyebrow hero__eyebrow"><span className="eyebrow-dot" /> AN INTERACTIVE DOCUMENTARY <span className="eyebrow-separator">/</span> A BUILDER IN MUMBAI</p>
+              <p className="eyebrow hero__eyebrow"><span className="eyebrow-dot" /> {copy.heroEyebrow.replace(' / ', ' ')} </p>
               <h1 aria-label="I build things to understand how they work.">
                 <span className="hero-title__line"><BlurText text="I build things" delay={0.035} /></span>
                 <span className="hero-title__line"><BlurText text="to understand" delay={0.06} /></span>
                 <span className="hero-title__line hero-title__last"><BlurText text="how they" delay={0.08} /> <em><BlurText text="work." delay={0.1} /></em></span>
               </h1>
-              <p className="hero__intro">Data Scientist &amp; AI/ML Engineer with two years of experience building production-grade LLM systems, agentic AI and retrieval pipelines.</p>
-              <p className="hero__subline">A journey through ideas, experiments, mistakes and things shipped.</p>
+              <p className="hero__intro">{copy.heroIntro}</p>
+              <p className="hero__subline">{copy.heroSubline}</p>
               <button className="game-invite" type="button" data-analytics-id="signal-lost-hero-invite" onClick={() => setGameOpen(true)}><span>INTERACTIVE EXPERIENCE / AVAILABLE</span><strong>Signal <em>Lost.</em></strong><small>Can you turn chaos into something real? · 8 levels · no login</small><Arrow diagonal /></button>
               <div className="hero__signal-caption"><span>01 — THE SIGNAL</span><span>EVERY BUILD STARTS WITH A THOUGHT</span></div>
             </div>
@@ -301,31 +348,31 @@ function App() {
             <div className="hero__bottom">
               <div className="hero__scroll"><span className="scroll-line" /><span>SCROLL TO FOLLOW THE SIGNAL</span></div>
               <div className="hero__quicklinks" aria-label="Choose a starting point">
-                <a href="#work">Show me what I've built <Arrow /></a>
-                <a href="#decision-room">Show me how I think <Arrow /></a>
-                <a href="#lessons">Show me what I've learned <Arrow /></a>
+                <a href="#work">{copy.showWork} <Arrow /></a>
+                <a href="#decision-room">{copy.showThinking} <Arrow /></a>
+                <a href="#lessons">{copy.showLearning} <Arrow /></a>
               </div>
             </div>
           </section>
 
           <section className="experience-index section-shell" aria-labelledby="choose-title">
             <div className="section-kicker"><span>START ANYWHERE</span><span>NO GATE. NO FORM. NO AUDIO.</span></div>
-            <h2 id="choose-title" className="experience-index__title">Choose your <em>experience.</em></h2>
+            <h2 id="choose-title" className="experience-index__title">{copy.chooseTitle}</h2>
             <div className="experience-links">
               <a className="experience-link" href="#work"><span className="experience-link__number">01</span><span><strong>Explore my work</strong><small>Projects and stories</small></span><Arrow diagonal /></a>
               <a className="experience-link" href="#lab"><span className="experience-link__number">02</span><span><strong>Enter the lab</strong><small>Experiments and ideas</small></span><Arrow diagonal /></a>
               <a className="experience-link experience-link--optional" href="#idea-engine"><span className="experience-link__number">03</span><span><strong>Play the Idea Engine</strong><small>A 60-second challenge <i>OPTIONAL</i></small></span><Arrow diagonal /></a>
               <a className="experience-link" href="#decision-room"><span className="experience-link__number">04</span><span><strong>Test my thinking</strong><small>The Decision Room</small></span><Arrow diagonal /></a>
             </div>
-            <p className="experience-index__note">For a quick read: <a href="#work">projects</a>, <a href="#decision-room">how I think</a>, then <a href="#contact">say hello</a>.</p>
+            <p className="experience-index__note">{copy.chooseNote}</p>
           </section>
 
           <section className="story section-shell chapter-section" id="story" data-chapter="story" aria-labelledby="story-title">
             <div className="section-label"><span>02</span><span>THE DIRECTION</span><span className="section-label__line" /></div>
             <div className="story__grid">
               <div>
-                <p className="eyebrow">THE PERSON BEHIND THE WORK</p>
-                <h2 id="story-title" className="section-title">Curiosity gives an idea <em>somewhere to go.</em></h2>
+                <p className="eyebrow">{copy.storyEyebrow}</p>
+                <h2 id="story-title" className="section-title">{copy.storyTitle}</h2>
               </div>
               <div className="story__note">
                 <p>I started with the visible part of machine learning: making a prediction. Working on production financial-intelligence systems changed the question. When a pipeline regresses, a score alone does not explain what changed, how much correction it creates, or whether an analyst can trust the result.</p>
@@ -340,10 +387,10 @@ function App() {
             <div className="section-label"><span>03</span><span>THE CONNECTIONS</span><span className="section-label__line" /><span>SELECTED WORK / DETAILS TO VERIFY</span></div>
             <div className="work__intro">
               <div>
-                <p className="eyebrow">THINGS I'VE TAKEN FROM IDEA TO REALITY</p>
-                <h2 id="work-title" className="section-title">An idea becomes something <em>when you build.</em></h2>
+                <p className="eyebrow">{copy.workEyebrow}</p>
+                <h2 id="work-title" className="section-title">{copy.workTitle}</h2>
               </div>
-              <p className="work__lead">Open a case note to see the questions that matter: the problem, my ownership, the decisions, the process and what the evidence can actually support.</p>
+              <p className="work__lead">{copy.workLead}</p>
             </div>
 
             <div className="project-list">
@@ -512,9 +559,9 @@ function App() {
           <section className="contact section-shell chapter-section" id="contact" data-chapter="contact" aria-labelledby="contact-title">
             <div className="section-label"><span>07</span><span>THE LOOP</span><span className="section-label__line" /></div>
             <div className="contact__content">
-              <p className="eyebrow">ONE IDEA SHIPPED. ANOTHER BEGINS.</p>
-              <h2 id="contact-title" className="section-title">Don't just read what I can do.<br /><em>Let's build something.</em></h2>
-              <p className="contact__copy">I'm interested in work where I can think, experiment, build, measure and own the outcome.</p>
+              <p className="eyebrow">{copy.contactEyebrow}</p>
+              <h2 id="contact-title" className="section-title">{copy.contactTitle}</h2>
+              <p className="contact__copy">{copy.contactCopy}</p>
               <div className="contact__links">
                 <a href="https://github.com/Omikar243" target="_blank" rel="noreferrer">GitHub <Arrow diagonal /><small>Omikar243</small></a>
                 <a href="https://www.linkedin.com/in/omkar-shettigar-43035737a/" target="_blank" rel="noreferrer">LinkedIn <Arrow diagonal /><small>omkar-shettigar</small></a>
