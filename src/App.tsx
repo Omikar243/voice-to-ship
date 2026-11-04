@@ -52,10 +52,10 @@ const projects: Project[] = [
   {
     id: 'catalysk-ai-systems',
     number: '03',
-    title: 'Production AI systems at Catalysk',
+    title: 'Production AI systems in sustainable finance',
     category: 'Data science / retrieval / evaluation',
     context: 'A production systems chapter spanning semantic retrieval, agentic classification and high-throughput feature pipelines.',
-    details: ['Problem · Make financial-intelligence classification faster, safer to change and more useful for analyst review.', 'Ownership · At Catalysk, built progressive routing, composable skill modules, hybrid RAG retrieval, counterparty guardrails and evaluation harnesses.', 'Technical approach · Combined deterministic rules, Sentence-BERT, FAISS, Ollama / LLaMA / Gemma, structured JSON contracts, LRU caching and async Python pipelines.', 'Results · Resume-reported 94% runtime reduction from 2,160s to 125s across 300,000+ records, 6.8× classification-latency speedup, and retrieval across 17,500+ entities.', 'Scope · Also built a 4,535-sample bit-for-bit parity harness and CI/CD validation gates; employer-sensitive implementation details stay intentionally high-level.'],
+    details: ['Problem · Make financial-intelligence classification faster, safer to change and more useful for analyst review.', 'Ownership · Built progressive routing, composable skill modules, hybrid RAG retrieval, counterparty guardrails and evaluation harnesses in a sustainable-finance production environment.', 'Technical approach · Combined deterministic rules, Sentence-BERT, FAISS, Ollama / LLaMA / Gemma, structured JSON contracts, LRU caching and async Python pipelines.', 'Results · Resume-reported 94% runtime reduction from 2,160s to 125s across 300,000+ records, 6.8× classification-latency speedup, and retrieval across 17,500+ entities.', 'Scope · Also built a 4,535-sample bit-for-bit parity harness and CI/CD validation gates; employer and client details are intentionally omitted.'],
   },
 ];
 
@@ -90,7 +90,7 @@ const decisionOptions = [
     id: 'discovery',
     title: 'Find a task worth trying',
     lens: 'Show one job, not “voice is faster.”',
-    experiment: 'First-cohort hypothesis: Bengaluru campus creators who regularly draft short scripts or captions. Show a consented, task-led example, then invite a real first try instead of optimizing for views.',
+    experiment: 'First-cohort hypothesis: Indian campus creators who regularly draft short scripts or captions. Show a consented, task-led example, then invite a real first try instead of optimizing for views.',
     signal: 'Proposed: qualified people who choose to start the task and reach the first useful output. No baseline exists.',
     next: 'If the story earns attention but not a first try, revisit audience, task and context before adding reach.',
     guardrail: 'A small exploratory cohort can surface friction; it cannot estimate India-wide demand or market size.',
@@ -485,7 +485,8 @@ function App() {
                 <span className="concept-index">MY HIRING CASE / DATA + PRODUCT</span>
                 <h3>Growth is the moment a first draft becomes a habit.</h3>
                 <p>As a data scientist with AI/ML experience and a product-thinking mindset, I would connect model behavior to the work a person actually finishes: find the failure slice, measure the correction cost, prototype one change, then see if users keep the output and return. That is the contribution I would bring—not a claim that I have already run a Wispr campaign.</p>
-                <div className="wispr-cohort"><span>FIRST COHORT / HYPOTHESIS</span><p>Bengaluru campus creators who regularly draft short scripts or captions on a phone or laptop. A bounded group with a concrete artifact to test—not a claim that this is India's best or largest audience. Validate their language, device, setting and comfort before deciding.</p></div>
+                <div className="wispr-cohort"><span>FIRST COHORT / HYPOTHESIS</span><p>Indian campus creators who regularly draft short scripts or captions on a phone or laptop. A bounded group with a concrete artifact to test—not a claim that this is India's best or largest audience. Validate language, device, setting and comfort before deciding.</p></div>
+                <div className="wispr-skills"><span>WHAT I BRING / RESUME-GROUNDED</span><ul><li><strong>Agentic AI + routing</strong><small>Rules → retrieval → structured LLM fallback, with confidence-aware escalation.</small></li><li><strong>RAG + retrieval systems</strong><small>Sentence-BERT, FAISS, vector indexing and semantic search built for real workloads.</small></li><li><strong>Evaluation discipline</strong><small>Golden parity, decision traces, CI/CD gates, drift checks and confidence calibration.</small></li><li><strong>Performance ownership</strong><small>Async Python, batching, LRU caching and profiling across 300,000+ records.</small></li><li><strong>Product-minded experimentation</strong><small>Turn model behavior into a kept draft, lower correction cost and repeat value.</small></li><li><strong>Production delivery</strong><small>FastAPI, Docker, AWS, MLflow, A/B testing and observable service contracts.</small></li></ul></div>
               </div>
               <div className="wispr-concept__measurement"><span className="eyebrow">WHAT WOULD COUNT AS VALUE?</span><ul><li>A draft the user keeps</li><li>Less correction work</li><li>Useful output quality</li><li>Voluntary repeat use</li></ul><p>Proposed measures only. No baseline, conversion rate or campaign outcome is claimed.</p></div>
             </div>

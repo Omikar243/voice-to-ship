@@ -90,6 +90,6 @@ test('keeps the about story and verified case-study anchors present', async () =
   assert.match(source, /a score alone does not explain what changed/);
   assert.match(source, /Knee osteoarthritis detection using CNN/);
   assert.match(source, /Ancient Modern Apparel/);
-  assert.match(source, /Production AI systems at Catalysk/);
+  assert.match(source, /Production AI systems in sustainable finance/);
   assert.match(source, /linkedin\.com\/in\/omkar-shettigar-43035737a/);
 });

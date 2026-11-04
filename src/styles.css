@@ -273,6 +273,13 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px sol
 .wispr-concept__statement > p { max-width: 600px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
 .wispr-cohort { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--rule-soft); }
 .wispr-cohort p { max-width: 620px; margin: 8px 0 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
+.wispr-skills { margin-top: 25px; padding: 18px 0 0; border-top: 1px solid var(--rule-soft); }
+.wispr-skills > span { color: var(--accent); font-family: var(--mono); font-size: 8px; letter-spacing: 0.12em; }
+.wispr-skills ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px 24px; margin: 17px 0 0; padding: 0; list-style: none; }
+.wispr-skills li { position: relative; padding-left: 14px; }
+.wispr-skills li::before { position: absolute; top: 0.48em; left: 0; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); content: ''; }
+.wispr-skills strong { display: block; color: #e7e2d9; font-size: 11px; font-weight: 500; }
+.wispr-skills small { display: block; margin-top: 4px; color: var(--muted); font-size: 9px; line-height: 1.55; }
 .wispr-concept__measurement { padding-left: 26px; border-left: 1px solid var(--rule); }
 .wispr-concept__measurement ul { display: grid; grid-template-columns: 1fr 1fr; gap: 11px 18px; margin: 21px 0 15px; padding: 0; list-style: none; }
 .wispr-concept__measurement li { position: relative; padding-left: 13px; color: #d6d3cb; font-size: 11px; }
@@ -406,6 +413,7 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px sol
   .wispr-evidence__item, .wispr-evidence__item + .wispr-evidence__item { padding: 16px 0; border-left: 0; border-bottom: 1px solid var(--rule-soft); }
   .wispr-evidence__item:last-child { border-bottom: 0; }
   .wispr-concept { gap: 27px; margin-top: 39px; }
+  .wispr-skills ul { grid-template-columns: 1fr; }
   .wispr-concept__measurement { padding: 20px 0 0; border-top: 1px solid var(--rule); border-left: 0; }
   .decision-room { margin-top: 68px; }
   .decision-room__heading { gap: 15px; }
