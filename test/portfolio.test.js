@@ -52,7 +52,7 @@ test('retries network failures and capacity responses before answering', async (
   try {
     const answer = await answerVoiceQuestion('What did Omkar build?');
     assert.equal(answer.text, 'Omkar builds things to understand how they work.');
-    assert.equal(answer.model, 'gemini-3.8-flash');
+    assert.equal(answer.model, 'gemini-flash-lite-latest');
     assert.equal(calls, 3);
   } finally {
     globalThis.fetch = originalFetch;

@@ -5,6 +5,7 @@ import { EvolvingSignal } from './components/EvolvingSignal';
 import { LenisRoot } from './components/LenisRoot';
 import { AnalyticsClient } from './components/AnalyticsClient';
 import { PerformanceMonitor } from './components/PerformanceMonitor';
+import { GeminiLiveVoiceAgent } from './components/GeminiLiveVoiceAgent';
 import { VoiceAgent } from './components/VoiceAgent';
 
 const AnalyticsDashboard = lazy(() => import('./components/AnalyticsDashboard').then(({ AnalyticsDashboard: component }) => ({ default: component })));
@@ -237,7 +238,7 @@ function App() {
       <div className="site-shell">
         <button className="game-launcher" type="button" data-analytics-id="signal-lost-launcher" onClick={() => setGameOpen(true)}><span>PLAY A GAME</span><strong>Signal Lost ↗</strong></button>
         {gameOpen && <Suspense fallback={null}><SignalLostGame onExit={() => setGameOpen(false)} /></Suspense>}
-        <VoiceAgent onPlayGame={() => setGameOpen(true)} />
+        {import.meta.env.VITE_VOICE_SERVICE_URL ? <GeminiLiveVoiceAgent onPlayGame={() => setGameOpen(true)} /> : <VoiceAgent onPlayGame={() => setGameOpen(true)} />}
         <a className="skip-link" href="#main-content">Skip to the portfolio</a>
         <EvolvingSignal
           activeChapter={activeChapter}
